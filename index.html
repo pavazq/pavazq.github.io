@@ -2569,9 +2569,9 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   const SPACING       = isTouch ? 13 : 9;
   const RADIUS        = isTouch ? 6.5 : 5.5;
   const REPEL_FORCE   = 0.55;
-  const REPEL_DIST    = isTouch ? 9000 : 6000;
-  const FADE_DIST_SQ  = (isTouch ? 96 : 60) ** 2;  // dedo revela uma área maior e mais gostosa
-  const FADE_RATE     = isTouch ? 0.16 : 0.10;     // no toque some mais rápido, acompanha o dedo
+  const REPEL_DIST    = isTouch ? 6200 : 6000;
+  const FADE_DIST_SQ  = (isTouch ? 64 : 60) ** 2;  // toque: revela só do tamanho do dedo, sutil (não uma área grossa)
+  const FADE_RATE     = isTouch ? 0.13 : 0.10;     // some suave, acompanhando o dedo sem ser abrupto
   const RECOVER_RATE  = 0.018;  // volta devagar (~55 frames = .9s) — dá tempo de ler
 
   let dots = [];
@@ -3094,7 +3094,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   console.log('[paper-design] script start');
   try {
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) { console.log('[paper-design] reduce-motion → skipping'); throw new Error('reduce-motion'); }
+    // Com "reduzir movimento" o gradiente CONTINUA (é o visual da marca) — só fica ESTÁTICO (speed 0).
 
     // Sem WebGL não tem shader — fica o gradiente CSS de fallback.
     // (no celular o shader roda também; se falhar, o CSS segura o visual)
@@ -3133,7 +3133,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
         shape: 'corners',
         offsetX: 0, offsetY: 0,
         scale: 1, rotation: 0,
-        speed: 1,
+        speed: reduceMotion ? 0 : 1,
         colors: ['hsl(342, 76%, 53%)', 'hsl(234, 88%, 58%)', 'hsl(275, 72%, 60%)'],
       };
     }
