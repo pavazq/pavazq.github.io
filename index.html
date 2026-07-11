@@ -2582,11 +2582,11 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     'hsl(232, 84%, 66%)',   // cobalto claro
     'hsl(275, 60%, 76%)',   // lilás suave (ponte rosa↔azul)
   ];
-  // no celular: bolinhas um pouco maiores e área de toque generosa (dedo > cursor)
+  // no celular: bolinhas quase iguais às do desktop (finas e densas = mais bonitas)
   const isTouch = matchMedia('(max-width: 760px)').matches || matchMedia('(pointer: coarse)').matches;
   // SPACING < 2*RADIUS = bolinhas se sobrepõem e cobrem 100% (texto invisível)
-  const SPACING       = isTouch ? 13 : 9;
-  const RADIUS        = isTouch ? 6.5 : 5.5;
+  const SPACING       = isTouch ? 10 : 9;
+  const RADIUS        = isTouch ? 6 : 5.5;
   const REPEL_FORCE   = 0.55;
   const REPEL_DIST    = isTouch ? 6200 : 6000;
   const FADE_DIST_SQ  = (isTouch ? 64 : 60) ** 2;  // toque: revela só do tamanho do dedo, sutil (não uma área grossa)
