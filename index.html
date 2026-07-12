@@ -2862,11 +2862,12 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   function screenHtml(url, kind) {
     const key = SHOTS[url];
     const poster = key ? '<img class="dv-poster" src="img/' + kind + '-' + key + '.jpg" alt="" aria-hidden="true"/>' : '';
-    const loading = '<div class="dv-loading"><span class="dv-spin"></span>carregando versão ao vivo…</div>';
+    // Sem "carregando": o screenshot aparece na hora (já parece o site pronto) e a versão
+    // ao vivo assume por cima em silêncio quando estiver pronta — nada de aviso de loading.
     const frame = '<iframe src="' + url + '" title="preview" referrerpolicy="no-referrer" ' +
-      'style="opacity:0;transition:opacity .5s ease" ' +
-      'onload="this.style.opacity=1;var l=this.parentNode.querySelector(\'.dv-loading\');if(l)l.classList.add(\'done\')"></iframe>';
-    return poster + frame + loading;
+      'style="opacity:0;transition:opacity .4s ease" ' +
+      'onload="this.style.opacity=1"></iframe>';
+    return poster + frame;
   }
   function buildDesktop(url, label) {
     return '<div class="dv-desktop">' +
@@ -2895,13 +2896,9 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     cnt.innerHTML = html;
     bg.classList.add('open');
     document.body.style.overflow = 'hidden';
-    // fallback: servidor frio pode segurar o "load" por muito tempo.
-    // depois de 12s revela o site mesmo assim e esconde o aviso.
+    // fallback: se o servidor frio segurar o "load", revela a versão ao vivo mesmo assim
     const f = cnt.querySelector('iframe');
-    const l = cnt.querySelector('.dv-loading');
-    if (f && l) setTimeout(() => {
-      if (!l.classList.contains('done')) { l.classList.add('done'); f.style.opacity = 1; }
-    }, 12000);
+    if (f) setTimeout(() => { if (f.style.opacity !== '1') f.style.opacity = 1; }, 9000);
   }
   function closeModal() {
     bg.classList.remove('open');
