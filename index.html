@@ -2787,13 +2787,17 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
       const wrap = btn.parentElement;
       const menu = wrap.querySelector('.proj-open-menu');
       if (!menu) return;
-      // no celular o site abre direto em nova aba
-      if (window.matchMedia('(max-width: 820px)').matches) {
-        const first = menu.querySelector('button[data-url]');
-        if (first) window.open(first.dataset.url, '_blank', 'noopener');
+      const firstBtn = menu.querySelector('button[data-url]');
+      const firstUrl = firstBtn ? firstBtn.dataset.url : null;
+      const isSys = btn.closest('.proj-card') && btn.closest('.proj-card').classList.contains('sys');
+      const touch = window.matchMedia('(max-width: 820px)').matches || window.matchMedia('(pointer: coarse)').matches;
+      // Sistemas (apps pesados, com tour) e QUALQUER aparelho de toque (celular/tablet):
+      // abrem o app direto em nova aba — tela cheia, nativo, sem moldura travando nem tour cobrindo.
+      if (isSys || touch) {
+        if (firstUrl) window.open(firstUrl, '_blank', 'noopener');
         return;
       }
-      // no desktop: mostra o menu com as duas opções (Desktop / Celular)
+      // SITE no desktop (mouse): mostra o menu com as molduras (Desktop / Celular)
       const wasOpen = menu.classList.contains('open');
       closeAll();
       if (!wasOpen) menu.classList.add('open');
