@@ -2793,9 +2793,10 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
         if (first) window.open(first.dataset.url, '_blank', 'noopener');
         return;
       }
-      // no desktop: abre direto na MOLDURA DE CELULAR (sem menu de escolha)
-      const mob = menu.querySelector('button[data-mode="mobile"]');
-      if (mob) mob.click();
+      // no desktop: mostra o menu com as duas opções (Desktop / Celular)
+      const wasOpen = menu.classList.contains('open');
+      closeAll();
+      if (!wasOpen) menu.classList.add('open');
     });
   });
 
