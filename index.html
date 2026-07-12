@@ -2917,7 +2917,13 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
       if (mode === 'local') { window.open(local, '_blank'); return; }
       // quem já está no celular vê o site de verdade, direto — sem moldura dentro da tela
       if (window.matchMedia('(max-width: 820px)').matches) { window.open(url, '_blank', 'noopener'); return; }
-      if (mode === 'desktop') openModal(buildDesktop(url, label));
+      // Desktop: SISTEMA abre o app de verdade em nova aba; SITE mostra a moldura de navegador
+      // (fica lindo, poster é screenshot real). Celular: sempre moldura de telefone.
+      if (mode === 'desktop') {
+        const isSys = btn.closest('.proj-card') && btn.closest('.proj-card').classList.contains('sys');
+        if (isSys) window.open(url, '_blank', 'noopener');
+        else openModal(buildDesktop(url, label));
+      }
       if (mode === 'mobile')  openModal(buildMobile(url));
     });
   });
