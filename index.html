@@ -1158,7 +1158,7 @@
     .c-submit {
       display: flex; align-items: center; justify-content: center; gap: 10px;
       width: 100%; padding: 15px 24px; border-radius: 12px; margin-top: 4px;
-      background: var(--rose); color: #fff;
+      background: var(--rose); color: #fff; white-space: nowrap;
       font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600;
       box-shadow: 0 10px 28px -8px rgba(244,63,94,.5); border: none; cursor: pointer;
       transition: transform .25s, box-shadow .25s, opacity .25s;
@@ -1897,7 +1897,7 @@
       <div class="proj-info">
         <span class="proj-tag tag-coral">Site Institucional</span>
         <h3 class="proj-name">JSR Ambiental</h3>
-        <p class="proj-desc">Site institucional para empresa de soluções ambientais, com identidade verde e foco em sustentabilidade.</p>
+        <p class="proj-desc">Site institucional para uma <b>engenheira ambiental</b>, com identidade verde e foco em sustentabilidade.</p>
       </div>
       <div class="proj-open-wrap">
         <button class="proj-open-btn">Abrir ↗</button>
@@ -2171,7 +2171,10 @@
   .mk-notes-win .win-body p { margin: 0 0 11px; }
   .mk-notes-win .win-body p:last-child { margin: 0; }
   .mk-notes-win .win-body b { font-weight: 700; }
-  .mk-skills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .mk-skills { display: flex; flex-wrap: nowrap; gap: 10px; overflow-x: auto; scrollbar-width: none;
+    -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
+  .mk-skills::-webkit-scrollbar { display: none; }
+  .mk-skills > * { flex: 0 0 auto; }
   .mk-seal-a { position: absolute; left: -18px; bottom: -26px; z-index: 3; }
   .mk-seal-b { position: absolute; right: -14px; top: -30px; z-index: 3; }
   .mk-postit-s { align-self: flex-start; margin-left: 8px; }
@@ -2203,8 +2206,8 @@
           <div class="win-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="win-title">Notas · sobre.txt</span></div>
           <div class="win-body">
             <p>Eu gosto de fazer as coisas com <b>cuidado</b>: colocar personalidade nos detalhes e dar o meu melhor em cada projeto que assino.</p>
-            <p>Tudo começou no <b>Explosion</b>, o nosso salão. Pra ajudar o negócio a crescer, precisei ir muito além da nutrição: fui aprender de identidade visual a site, de sistema a experiência do cliente. E, sem perceber, o <b>design e a tecnologia</b> viraram o que eu faço hoje.</p>
-            <p>Hoje eu crio sites e sistemas do zero, pensados pro seu negócio e pra sua gente. Gosto de juntar duas coisas que quase nunca andam juntas: <b>bonito de ver e gostoso de usar</b>. Sem modelo pronto, sem coisa genérica e sem palavra difícil pra te confundir.</p>
+            <p>Tudo começou no <b>Explosion</b>, o nosso salão. Pra ajudar o negócio a crescer, precisei ir muito além da nutrição: fui aprender de identidade visual a site, de sistema a experiência do cliente. E, sem perceber, <b>me apaixonei</b>.</p>
+            <p>Hoje eu crio sites e sistemas do zero, pensados pro seu negócio e pra sua gente. Gosto de juntar duas coisas que quase nunca andam juntas: <b>bonito de ver e fácil de usar</b>. Sem modelo pronto e sem coisa genérica.</p>
           </div>
         </div>
         <div class="mk-skills">
@@ -2383,7 +2386,14 @@
     100% { opacity:1; transform:translateY(0) rotate(0deg); }
   }
   .hf-spark { position:absolute; pointer-events:none; z-index:1; }
-  @media (max-width:520px){ .hf-word { letter-spacing:-.04em; } }
+  @media (max-width:520px){
+    .hf-word { letter-spacing:-.04em; }
+    /* no celular: fim compacto (fecha o vão) e o "hera" bem maior, colado no fim */
+    .hera-finale { min-height: 26vh; padding: 6px 10px 22px; }
+    .hf-l, .hf-dot { font-size: 35vw; }
+    .hera-finale::before { top:60%; height:200px; }
+    #ctt { padding-bottom: 22px; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .hf-l, .hf-dot { opacity:1; transform:none; animation:none !important; }
   }
@@ -3628,7 +3638,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
       sub: 'Sites com a cara da marca, rápidos e fáceis de usar em qualquer tela.',
       items: [
         { name: 'Salão Explosion', img: 'img/preview-salao.jpg', desc: 'Site imersivo com animações para salão de beleza em Diadema, SP.', url: 'https://salaoexplosion.com.br' },
-        { name: 'JSR Ambiental', img: 'img/preview-jsr.jpg', desc: 'Site institucional para empresa de soluções ambientais.', url: 'https://jsrsolucoesambientais.com.br' },
+        { name: 'JSR Ambiental', img: 'img/preview-jsr.jpg', desc: 'Site institucional para uma engenheira ambiental.', url: 'https://jsrsolucoesambientais.com.br' },
         { name: 'A2 Transportes', img: 'img/preview-a2.jpg', desc: 'Site para empresa de transporte de passageiros.', url: 'https://a2-transportes.vercel.app' },
         { name: 'Tecbas', img: 'img/preview-tecbas.jpg', desc: 'Site para empresa de manutenção de máquinas CNC.', url: 'https://tecbas-site-palomavazq-9520s-projects.vercel.app' },
         { name: 'Nanas Crochets', img: 'img/dt-nanas.jpg', desc: 'Loja de peças de crochê feitas à mão, com catálogo e pedido sob encomenda.', url: 'https://nanas-crochet.vercel.app' },
