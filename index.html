@@ -456,6 +456,15 @@
       mix-blend-mode: overlay;
     }
     [data-theme="light"] .hero-grain { opacity: .32; mix-blend-mode: multiply; }
+    /* grão de FILME por cima de tudo: aparece até nas partes escuras (igual o shader),
+       speckles claros via blend screen — textura uniforme na tela inteira */
+    .hero-grain2 {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n2'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n2)'/></svg>");
+      opacity: .14;
+      mix-blend-mode: screen;
+    }
+    [data-theme="light"] .hero-grain2 { opacity: .06; }
 
     /* MOBILE (portrait): blobs de canto encolhem e o meio fica preto — aqui o gradiente
        preenche a tela alta/estreita como o shader (azul na direita, rosa na esquerda/base).
@@ -1352,6 +1361,7 @@
 <!-- HERO (paper-design GrainGradient REAL via ESM + fallback CSS) -->
 <section class="hero" id="home">
   <div class="hero-grain" aria-hidden="true"></div>
+  <div class="hero-grain2" aria-hidden="true"></div>
   <div id="hero-shader-mount" aria-hidden="true"></div>
 
   <div class="hero-lead">
