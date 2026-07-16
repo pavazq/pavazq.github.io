@@ -446,6 +446,28 @@
         radial-gradient(ellipse 78% 72% at 100% 0%,  hsla(234, 90%, 60%, .5) 0%, hsla(234, 88%, 56%, .26) 26%, transparent 62%),
         radial-gradient(ellipse 55% 55% at 58% 88%,  hsla(270, 80%, 64%, .28) 0%, transparent 55%);
     }
+    /* MOBILE (portrait): blobs de canto encolhem e o meio fica preto — aqui o gradiente
+       preenche a tela alta/estreita como o shader (azul na direita, rosa na esquerda/base) */
+    @media (max-width: 860px) {
+      .hero {
+        background-image:
+          /* cobalto — banda vertical na direita */
+          radial-gradient(ellipse 72% 128% at 122% 30%, hsla(232,96%,60%,1) 0%, hsla(244,90%,56%,.7) 24%, hsla(266,80%,56%,.32) 46%, transparent 66%),
+          /* magenta/rosa — borda esquerda + meio-baixo */
+          radial-gradient(ellipse 58% 95% at -20% 74%, hsla(322,88%,56%,.72) 0%, hsla(322,80%,52%,.34) 30%, transparent 60%),
+          /* framboesa — canto inferior esquerdo */
+          radial-gradient(ellipse 62% 52% at -8% 112%, hsla(342,86%,56%,.55) 0%, transparent 55%),
+          /* violeta — topo, pra não cortar seco atrás do nav */
+          radial-gradient(ellipse 96% 42% at 82% -10%, hsla(256,84%,58%,.42) 0%, transparent 60%);
+      }
+      [data-theme="light"] .hero {
+        background-image:
+          radial-gradient(ellipse 72% 128% at 122% 30%, hsla(232,90%,60%,.55) 0%, hsla(244,86%,56%,.3) 26%, transparent 64%),
+          radial-gradient(ellipse 58% 95% at -20% 74%, hsla(322,82%,58%,.42) 0%, transparent 58%),
+          radial-gradient(ellipse 62% 52% at -8% 112%, hsla(342,80%,58%,.32) 0%, transparent 55%),
+          radial-gradient(ellipse 96% 42% at 82% -10%, hsla(256,78%,60%,.26) 0%, transparent 60%);
+      }
+    }
 
     /* CAMADA TOPO — grain (ruído) via SVG inline, posição POSITIVA pra ficar visível */
     .hero-grain {
