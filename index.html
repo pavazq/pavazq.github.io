@@ -1589,12 +1589,13 @@
     font-size:clamp(13px,1.15vw,22px); color:var(--rose); }
   /* folhagem viva em primeiro plano (desliza mais rápido = profundidade) */
   .pz-front { position:absolute; top:0; left:0; height:100%; aspect-ratio: 2172/724; z-index:3; pointer-events:none; will-change:transform; }
-  .pz-leaf { position:absolute; bottom:-5vh; width:auto; filter:blur(2.4px) drop-shadow(0 10px 24px rgba(0,0,0,.5)); opacity:.72;
+  /* leve: sem blur nem drop-shadow (só o balanço, que é transform GPU-barato) */
+  .pz-leaf { position:absolute; bottom:-5vh; width:auto; opacity:.6;
     transform-origin:bottom center; animation: pz-leafsway var(--lsd,5.5s) ease-in-out infinite alternate; }
   @keyframes pz-leafsway { from { transform: rotate(-2.2deg); } to { transform: rotate(2.4deg); } }
-  /* brilho suave que segue o mouse */
-  .pz-glow { position:absolute; inset:0; z-index:4; pointer-events:none; mix-blend-mode:soft-light; opacity:.9;
-    background: radial-gradient(380px 380px at var(--gx,50%) var(--gy,42%), rgba(255,240,200,.75), transparent 70%); }
+  /* brilho suave que segue o mouse (sem mix-blend, mais leve) */
+  .pz-glow { position:absolute; inset:0; z-index:4; pointer-events:none; opacity:.4;
+    background: radial-gradient(360px 360px at var(--gx,50%) var(--gy,42%), rgba(255,235,190,.55), transparent 68%); }
   /* pétalas voando ao vento */
   .pz-petal { position:absolute; top:-6vh; width:15px; height:19px; z-index:4; pointer-events:none;
     border-radius:62% 62% 60% 60% / 74% 74% 40% 40%;
@@ -1623,9 +1624,9 @@
     filter:drop-shadow(0 8px 10px rgba(0,0,0,.32)); }
   .pz-legs { position:absolute; left:50%; bottom:0; width:86%; transform:translateX(-50%); z-index:2; }
   .pz-legs svg { width:100%; height:auto; display:block; overflow:visible; }
+  /* contorno branco mais leve: 4 sombras em vez de 8 */
   .pz-stick { filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
-    drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff) drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff)
-    drop-shadow(0 8px 8px rgba(0,0,0,.32)); }
+    drop-shadow(0 7px 7px rgba(0,0,0,.3)); }
   .pz-legenda { position:absolute; left:clamp(20px,5vw,56px); top:clamp(66px,10vh,96px); z-index:7; }
   .pz-frase { font-family:'Caveat',cursive; font-weight:700; font-size:clamp(30px,5vw,58px);
     color:#FAF7F2; line-height:1; margin-top:12px; text-shadow:0 3px 20px rgba(0,0,0,.7); }
@@ -1642,30 +1643,30 @@
 <section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
   <div class="pz-stage" id="pz-stage">
     <div class="pz-mundo" id="pz-mundo">
-      <img class="pz-pano" src="img/galeria.png" alt="" aria-hidden="true"/>
+      <img class="pz-pano" src="img/galeria.jpg" alt="" aria-hidden="true"/>
 
       <!-- quadros flutuantes: a curadoria da Hera -->
       <figure class="pz-quadro" style="--qx:7%; --qy:12%; --qw:10%; --rot:1.8deg; --d:30; --swd:7.4s">
         <div class="pz-qin">
-          <div class="pz-moldura"><img src="img/quadro-crianca.png" alt="A flor da hera desenhada a giz de cera"/></div>
+          <div class="pz-moldura"><img src="img/quadro-crianca.jpg" alt="A flor da hera desenhada a giz de cera"/></div>
         </div>
       </figure>
 
       <figure class="pz-quadro" style="--qx:29%; --qy:16%; --qw:16%; --rot:1.4deg; --d:44; --swd:7.6s">
         <div class="pz-qin">
-          <div class="pz-moldura"><img src="img/quadro-criacao.png" alt="A Criação da Hera, paródia de Michelangelo"/></div>
+          <div class="pz-moldura"><img src="img/quadro-criacao.jpg" alt="A Criação da Hera, paródia de Michelangelo"/></div>
         </div>
       </figure>
 
       <figure class="pz-quadro" style="--qx:55%; --qy:12%; --qw:9.5%; --rot:-2.2deg; --d:52; --swd:6s">
         <div class="pz-qin">
-          <div class="pz-moldura"><img src="img/quadro-natureza.png" alt="Natureza-morta com a flor hera"/></div>
+          <div class="pz-moldura"><img src="img/quadro-natureza.jpg" alt="Natureza-morta com a flor hera"/></div>
         </div>
       </figure>
 
       <figure class="pz-quadro" style="--qx:78%; --qy:18%; --qw:15%; --rot:-1.6deg; --d:34; --swd:7s">
         <div class="pz-qin">
-          <div class="pz-moldura"><img src="img/quadro-piscina.png" alt="A flor da hera boiando na piscina"/></div>
+          <div class="pz-moldura"><img src="img/quadro-piscina.jpg" alt="A flor da hera boiando na piscina"/></div>
         </div>
       </figure>
     </div>
@@ -2184,7 +2185,7 @@
         <span class="y2k-washi" style="position:absolute; top:-9px; right:-12px; z-index:4; rotate:16deg; width:78px; height:24px; background:rgba(232,68,122,.38);"></span>
         <div class="mac-win win-photo mk-photo-win">
           <div class="win-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="win-title">Photo Booth</span></div>
-          <div class="win-body"><img src="img/sobre-paloma-nova.png" alt="Paloma Vazquez"/></div>
+          <div class="win-body"><img src="img/sobre-paloma-nova.jpg" alt="Paloma Vazquez"/></div>
         </div>
         <span class="y2k-seal mk-seal-a">do rascunho<br/>ao deploy</span>
         <span class="y2k-spark" style="position:absolute; right:-6px; bottom:64px; font-size:26px; z-index:3">✦</span>
@@ -2424,7 +2425,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   if (!canvas) return;
 
   const config = {
-    SIM_RESOLUTION: 128, DYE_RESOLUTION: 1024, CAPTURE_RESOLUTION: 512,
+    SIM_RESOLUTION: 64, DYE_RESOLUTION: 512, CAPTURE_RESOLUTION: 512,
     DENSITY_DISSIPATION: 3.5, VELOCITY_DISSIPATION: 2,
     PRESSURE: 0.1, PRESSURE_ITERATIONS: 20,
     CURL: 3, SPLAT_RADIUS: 0.2, SPLAT_FORCE: 6000, SHADING: true,
