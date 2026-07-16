@@ -3737,13 +3737,26 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     render();
     console.log('[paper-design] mounted ✓');
 
-    // Revela assim que o canvas pinta o primeiro frame — cross-fade rápido por cima
-    // do gradiente CSS (sem atraso artificial, pra os grânulos aparecerem logo).
-    requestAnimationFrame(() => mount.classList.add('on'));
-
-    // Só esconde o grão (pra não dobrar textura). O gradiente CSS do .hero fica como
-    // base permanente: se o shader falhar em qualquer tela, o fundo lindo continua lá.
-    document.querySelector('.hero-grain')?.style.setProperty('display', 'none');
+    // Revela SÓ quando o canvas existir E tiver tamanho de verdade — senão, na 1ª carga
+    // (layout ainda não pronto) ele aparecia em branco e só surgia depois do refresh.
+    const grain = document.querySelector('.hero-grain');
+    let tries = 0;
+    (function waitReady() {
+      const c = mount.querySelector('canvas');
+      if (c && mount.clientHeight > 4 && c.width > 4) {
+        window.dispatchEvent(new Event('resize'));           // garante o shader dimensionar certo
+        requestAnimationFrame(() => {
+          mount.classList.add('on');                          // cross-fade por cima do gradiente CSS
+          grain?.style.setProperty('display', 'none');        // esconde o grão CSS (sem dobrar textura)
+        });
+      } else if (tries++ < 120) {
+        requestAnimationFrame(waitReady);
+      } else {
+        mount.classList.add('on');                            // desiste após ~2s: revela mesmo assim
+      }
+    })();
+    // quando fontes/imagens terminarem de carregar, força um redimensionamento (corrige o 1º load)
+    addEventListener('load', () => window.dispatchEvent(new Event('resize')), { once: true });
 
     new MutationObserver(muts => {
       for (const m of muts) if (m.attributeName === 'data-theme') { render(); break; }
