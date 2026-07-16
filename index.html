@@ -2,7 +2,7 @@
 <html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <!-- não guardar versão velha: o navegador (inclusive o do WhatsApp) sempre revalida -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
@@ -2227,6 +2227,15 @@
     .mk-collage { grid-template-columns: 1fr; gap: 30px; }
     .mk-photo-win { rotate: 0deg; max-width: 320px; margin: 0 auto; }
     .mk-seal-a, .mk-seal-b { display: none; }
+    /* no celular tudo reto e sem vazar pro lado (senão a tela arrasta / corta o texto) */
+    #sobre .s-eyebrow { rotate: 0deg; }
+    .mk-collage { max-width: 100%; }
+    /* min-width:0 deixa as colunas do grid encolherem até a tela (senão as pills esticam tudo) */
+    .mk-photo-win, .mk-col-r { min-width: 0; }
+    .mk-col-r { width: 100%; padding-top: 0; }
+    .mk-notes-win { rotate: 0deg; max-width: 100%; }
+    .mk-skills { min-width: 0; max-width: 100%; }
+    .mk-postit-s { rotate: 0deg; margin-left: 0; align-self: stretch; }
   }
 </style>
 <section id="sobre" class="rv">
