@@ -3743,8 +3743,14 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Com "reduzir movimento" o gradiente CONTINUA (é o visual da marca) — só fica ESTÁTICO (speed 0).
 
+    // NO MOBILE: NÃO carrega o shader WebGL. No celular ele às vezes renderiza em
+    // branco/preto e cobre o gradiente CSS — fazendo o topo "sumir do nada". No
+    // celular fica SÓ o gradiente CSS + grão (puro CSS, SEMPRE aparece).
+    if (matchMedia('(max-width: 860px)').matches) {
+      console.log('[paper-design] mobile → só gradiente CSS (garantido, sem shader)');
+      throw new Error('skip-mobile');
+    }
     // Sem WebGL não tem shader — fica o gradiente CSS de fallback.
-    // (no celular o shader roda também; se falhar, o CSS segura o visual)
     if (!('WebGLRenderingContext' in window)) {
       console.log('[paper-design] sem-WebGL → mantém gradiente CSS');
       throw new Error('skip-no-webgl');
