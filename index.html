@@ -466,19 +466,17 @@
     }
     [data-theme="light"] .hero-grain2 { opacity: .06; }
 
-    /* MOBILE (portrait): blobs de canto encolhem e o meio fica preto — aqui o gradiente
-       preenche a tela alta/estreita como o shader (azul na direita, rosa na esquerda/base).
-       DEPOIS das regras base + !important pra vencer a cascata (senão o grão trava em .55). */
+    /* MOBILE (portrait): usa uma FOTO em alta do próprio shader como fundo — fica IDÊNTICO
+       ao "antes" (mesma cor, mesmos grânulos) e por ser imagem SEMPRE carrega, nunca falha.
+       Grão CSS escondido (já está na imagem). No tema claro mantém o gradiente CSS. */
     @media (max-width: 860px) {
       .hero {
-        background-image:
-          radial-gradient(ellipse 90% 120% at 116% 22%, hsla(232,96%,60%,1) 0%, hsla(244,92%,56%,.8) 25%, hsla(268,82%,56%,.42) 48%, transparent 72%),
-          radial-gradient(ellipse 76% 92% at -15% 70%, hsla(322,90%,56%,.8) 0%, hsla(322,82%,52%,.4) 32%, transparent 64%),
-          radial-gradient(ellipse 70% 55% at -5% 110%, hsla(342,88%,56%,.6) 0%, transparent 58%),
-          radial-gradient(ellipse 100% 72% at 62% 52%, hsla(268,80%,58%,.3) 0%, transparent 62%) !important;
+        background-image: url('img/hero-mobile.jpg') !important;
+        background-size: cover !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
       }
-      .hero-grain { opacity: 1 !important; }
-      .hero-grain2 { opacity: .3 !important; }
+      .hero-grain, .hero-grain2 { display: none; }
       [data-theme="light"] .hero {
         background-image:
           radial-gradient(ellipse 72% 128% at 122% 30%, hsla(232,90%,60%,.55) 0%, hsla(244,86%,56%,.3) 26%, transparent 64%),
@@ -486,6 +484,7 @@
           radial-gradient(ellipse 62% 52% at -8% 112%, hsla(342,80%,58%,.32) 0%, transparent 55%),
           radial-gradient(ellipse 96% 42% at 82% -10%, hsla(256,78%,60%,.26) 0%, transparent 60%) !important;
       }
+      [data-theme="light"] .hero-grain { display: block; }
     }
 
     /* CAMADA SHADER REAL — paper-design GrainGradient (canvas WebGL), por cima do CSS */
