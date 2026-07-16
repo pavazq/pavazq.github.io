@@ -26,8 +26,8 @@
   <link rel="modulepreload" href="https://esm.sh/react@18.3.1"/>
   <link rel="modulepreload" href="https://esm.sh/react-dom@18.3.1/client"/>
   <link rel="modulepreload" href="https://esm.sh/@paper-design/shaders-react@0.0.76?deps=react@18.3.1,react-dom@18.3.1"/>
-  <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('pv-theme') || 'dark');</script>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('pv-theme-y2k') || 'dark');</script>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet"/>
   <style>
     /* ═══════════ TOKENS — Framboesa & Mel · DARK (padrão) ═══════════ */
     :root, [data-theme="dark"] {
@@ -52,8 +52,8 @@
     }
     /* ═══════════ TOKENS — Framboesa & Mel · CLARO (creme) ═══════════ */
     [data-theme="light"] {
-      --white:  #FAF1EB;   /* creme do logo hera. */
-      --off:    #F1E7DA;   /* superfície bege quente */
+      --white:  #F2E9D9;   /* creme mais quente/suave (menos ofuscante) */
+      --off:    #EADECB;   /* superfície bege quente */
       --ink:    #191512;
       --dim:    rgba(25,21,18,.66);
       --light:  rgba(25,21,18,.42);
@@ -72,14 +72,31 @@
       --blue:   #1B27DB;   /* azul do logo hera. */
     }
 
+    /* ═══════════ Y2K SCRAPBOOK — camada de teste (cores + papel) ═══════════ */
+    :root {
+      --y2k-yellow:   #FBF3A6;   /* post-it */
+      --y2k-yellow-2: #F0DE86;   /* dobra/sombra do post-it */
+      --y2k-sky:      #9BD4F0;   /* azul-céu acento */
+      --y2k-sky-2:    #D9EFFB;   /* azul-céu claro (fill) */
+      --y2k-paper:    #FFFDF7;   /* papel/creme dos cards */
+      --y2k-ink:      #2A2740;   /* texto de leitura escuro nos cards */
+      --y2k-tape:     rgba(155,212,240,.55);
+      --y2k-dot:      rgba(42,39,64,.10);
+      --y2k-page:     #FBF6EC;   /* fundo papel (light) */
+    }
+    [data-theme="dark"] {
+      --y2k-dot:      rgba(155,212,240,.08);
+      --y2k-page:     #141326;   /* papel escuro (indigo) */
+    }
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; overflow-x: hidden; max-width: 100%; background: var(--white); transition: background-color .8s ease; }
+    html { scroll-behavior: smooth; overflow-x: clip; max-width: 100%; background: var(--white); transition: background-color .8s ease; }
     body {
       background: var(--white);
       color: var(--ink);
       font-family: 'Inter', sans-serif;
       font-weight: 400;
-      overflow-x: hidden;
+      overflow-x: clip;
       max-width: 100%;
       transition: color .8s ease;
     }
@@ -100,6 +117,193 @@
       transition: opacity .8s ease;
     }
     [data-theme="light"] body::before { opacity: .5; }
+
+    /* ═══════════ Y2K SCRAPBOOK — componentes reutilizáveis ═══════════ */
+    /* inclinações fixas (evita bagunça: só 3 ângulos) */
+    .tilt-a { rotate: -4deg; } .tilt-b { rotate: 3deg; } .tilt-c { rotate: -2deg; }
+
+    /* tarja marca-texto — reusa .is-mark, adiciona variantes amarela e azul */
+    .is-mark.mark-yellow { background: linear-gradient(120deg, #FBF3A6, #FDE9A0); }
+    .is-mark.mark-sky    { background: linear-gradient(120deg, #BFE6F8, #DCF1FB); }
+
+    /* sticker-title: título/eyebrow "colado" (die-cut) */
+    .y2k-sticker {
+      display: inline-block; background: var(--y2k-paper); color: var(--y2k-ink) !important;
+      padding: 5px 14px; border-radius: 9px 13px 8px 12px; border: 2px solid #fff;
+      box-shadow: 0 7px 18px -9px rgba(42,39,64,.45); rotate: -2deg;
+      -webkit-background-clip: border-box; background-clip: border-box;
+    }
+
+    /* janela de Mac (Photo Booth / Notes / Maps) — 3 bolinhas macOS reais */
+    .mac-win {
+      background: var(--y2k-paper); border-radius: 13px; overflow: hidden;
+      border: 1px solid rgba(42,39,64,.10);
+      box-shadow: 0 22px 48px -22px rgba(42,39,64,.5), 0 2px 0 rgba(0,0,0,.04);
+    }
+    .mac-win .win-bar {
+      display: flex; align-items: center; gap: 8px; padding: 9px 12px;
+      background: linear-gradient(#F4EFE4, #E7E0D2); border-bottom: 1px solid rgba(42,39,64,.10);
+    }
+    .mac-win .win-dots { display: flex; gap: 6px; flex: none; }
+    .mac-win .win-dots span { width: 11px; height: 11px; border-radius: 50%; display: block; }
+    .mac-win .win-dots span:nth-child(1){ background:#FF5F57; }
+    .mac-win .win-dots span:nth-child(2){ background:#FFBD2E; }
+    .mac-win .win-dots span:nth-child(3){ background:#28CA41; }
+    .mac-win .win-title { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+      font-weight: 600; color: rgba(42,39,64,.55); letter-spacing: .01em; }
+    .mac-win .win-body { padding: 16px 18px; color: var(--y2k-ink); }
+    .mac-win.win-photo .win-body { padding: 0; }
+    .mac-win.win-photo img { width: 100%; display: block; }
+    .mac-win.win-notes .win-body { background: var(--y2k-yellow); }
+    /* variante TERMINAL (janela escura, mono) */
+    .mac-win.win-term { background: #17141F; border-color: rgba(255,255,255,.10); }
+    .mac-win.win-term .win-bar { background: linear-gradient(#28232F, #1D1927); border-bottom-color: rgba(255,255,255,.09); }
+    .mac-win.win-term .win-title { color: rgba(255,255,255,.5); }
+    .mac-win.win-term .win-body { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; line-height: 1.75; color: #E8E4F0; }
+    .win-term .t-pink { color: #FF89A9; } .win-term .t-blue { color: #8AA0FF; }
+    .win-term .t-green { color: #7EE787; } .win-term .t-dim { color: rgba(255,255,255,.4); }
+    .win-term .t-cur { display:inline-block; width:8px; height:15px; background:#FF89A9; vertical-align:-2px; animation: tw-blink 1s steps(1) infinite; }
+    /* variante MAPS (janela com pin) */
+    .mac-win.win-maps .win-body { padding: 0; position: relative; height: 130px;
+      background: linear-gradient(135deg, #DDEFE4, #CFE6F2); }
+    .win-maps .map-grid { position:absolute; inset:0;
+      background-image: linear-gradient(rgba(42,39,64,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(42,39,64,.07) 1px, transparent 1px);
+      background-size: 26px 26px; }
+    .win-maps .map-road { position:absolute; left:-10%; right:-10%; top:58%; height:9px; background:#fff; rotate:-6deg; box-shadow:0 0 0 1px rgba(42,39,64,.06); }
+    .win-maps .map-pin { position:absolute; left:50%; top:44%; transform:translate(-50%,-100%); font-size:30px; filter:drop-shadow(0 3px 3px rgba(0,0,0,.25)); }
+    .win-maps .map-label { position:absolute; left:12px; bottom:10px; background:#fff; color:var(--y2k-ink);
+      font-family:'Inter',sans-serif; font-weight:700; font-size:12px; padding:4px 10px; border-radius:100px; box-shadow:0 3px 8px -3px rgba(42,39,64,.4); }
+
+    /* post-it (bloco de recado) */
+    .y2k-postit {
+      position: relative; background: var(--y2k-yellow); color: var(--y2k-ink);
+      padding: 16px 18px; border-radius: 2px; max-width: 260px;
+      font-family: 'Inter', sans-serif; font-size: 13.5px; line-height: 1.5;
+      box-shadow: 0 12px 26px -12px rgba(42,39,64,.5); rotate: -2deg;
+      background-image: linear-gradient(var(--y2k-yellow), var(--y2k-yellow) 82%, var(--y2k-yellow-2));
+    }
+    .y2k-postit b { font-weight: 800; }
+    .y2k-postit::before { /* fita washi no topo */
+      content: ''; position: absolute; top: -10px; left: 50%;
+      width: 66px; height: 20px; background: var(--y2k-tape);
+      transform: translateX(-50%) rotate(-3deg); mix-blend-mode: multiply;
+    }
+
+    /* selo/carimbo flutuante */
+    .y2k-seal {
+      display: inline-flex; align-items: center; justify-content: center; text-align: center;
+      width: 94px; height: 94px; border-radius: 50%; padding: 10px;
+      border: 2px dashed var(--rose); color: var(--rose);
+      background: rgba(255,253,247,.72); backdrop-filter: blur(2px);
+      font-family: ui-monospace, Menlo, monospace; font-weight: 700; font-size: 10.5px;
+      text-transform: uppercase; letter-spacing: .05em; line-height: 1.25; rotate: -9deg;
+      box-shadow: 0 8px 18px -10px rgba(42,39,64,.4);
+    }
+    .y2k-seal.seal-blue { border-color: var(--blue); color: var(--blue); }
+
+    /* pill com emoji (botão arredondado tipo media-kit) */
+    .y2k-pill {
+      display: inline-flex; align-items: center; gap: 8px; padding: 9px 15px;
+      border-radius: 100px; background: var(--y2k-sky-2); color: var(--y2k-ink);
+      font-weight: 600; font-size: 13.5px; border: 1px solid rgba(42,39,64,.08);
+      box-shadow: 0 5px 13px -5px rgba(42,39,64,.32);
+      transition: transform .28s cubic-bezier(.2,.8,.3,1.5), box-shadow .28s ease;
+    }
+    .y2k-pill:hover { transform: translateY(-5px) rotate(-3deg); box-shadow: 0 15px 26px -9px rgba(42,39,64,.42); }
+    .y2k-pill .emo { font-size: 1.1em; line-height: 1; display: inline-block; }
+    .y2k-pill:hover .emo { animation: pill-wiggle .55s ease; }
+    @keyframes pill-wiggle { 0%,100%{ transform: rotate(0) } 30%{ transform: rotate(-20deg) scale(1.25) } 62%{ transform: rotate(15deg) scale(1.18) } }
+    /* selos, post-its e janelas também reagem ao mouse (vida, menos tech).
+       A inclinação usa `rotate:` (propriedade), então o hover endireita com `rotate:` e sobe com transform. */
+    .y2k-seal { transition: rotate .3s cubic-bezier(.2,.8,.3,1.4), transform .3s, box-shadow .3s; }
+    .y2k-seal:hover { rotate: 0deg; transform: scale(1.09); }
+    .y2k-postit { transition: rotate .3s cubic-bezier(.2,.8,.3,1.4), transform .3s, box-shadow .3s; }
+    .y2k-postit:hover { rotate: 0deg; transform: translateY(-4px); box-shadow: 0 18px 34px -14px rgba(42,39,64,.55); }
+    .mac-win { transition: rotate .35s cubic-bezier(.2,.8,.3,1.2), transform .35s, box-shadow .35s; }
+    .mk-photo-win:hover, .mk-notes-win:hover { rotate: 0deg; transform: translateY(-4px); }
+    .y2k-sticker { transition: rotate .3s cubic-bezier(.2,.8,.3,1.4), transform .3s; }
+    .y2k-sticker:hover { rotate: 1deg; transform: translateY(-2px) scale(1.03); }
+    .y2k-pill.pill-yellow { background: var(--y2k-yellow); }
+    .y2k-pill.pill-rose   { background: #FBD0DE; }
+
+    /* washi tape avulsa */
+    .y2k-washi {
+      display: inline-block; width: 72px; height: 22px; background: var(--y2k-tape);
+      mix-blend-mode: multiply; rotate: -4deg; pointer-events: none; border-radius: 1px;
+    }
+
+    /* sparkle decorativo ✦ */
+    .y2k-spark { color: var(--rose); pointer-events: none; opacity: .9;
+      display: inline-block; filter: drop-shadow(0 2px 4px rgba(232,68,122,.35)); }
+
+    /* letra de mão (scrapbook) nos recados e legendas */
+    .hand { font-family: 'Caveat', cursive; font-weight: 600; }
+    .y2k-postit { font-family: 'Caveat', cursive; font-size: 19px; font-weight: 600; line-height: 1.3; }
+    .y2k-postit b { font-weight: 700; }
+
+    /* rabiscos desenhados à mão (SVG) */
+    .doodle { position: absolute; pointer-events: none; z-index: 4; overflow: visible; opacity: .95; }
+    .doodle path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    /* pathLength=100 normaliza qualquer traço (não quebra o círculo) */
+    .doodle.dood-draw path { stroke-dasharray: 100; stroke-dashoffset: 100; animation: dood-in 1.1s ease forwards; }
+    @keyframes dood-in { to { stroke-dashoffset: 0; } }
+    @media (prefers-reduced-motion: reduce) { .doodle.dood-draw path { stroke-dashoffset: 0; animation: none; } }
+    /* a seta ganha vida: depois de desenhar, fica cutucando o botão */
+    .stmt-arrow { transform-origin: 70% 30%; animation: arrow-bob 2.4s ease-in-out 1.1s infinite; }
+    @keyframes arrow-bob { 0%,100%{ transform: translate(0,0) rotate(0deg); } 50%{ transform: translate(3px,5px) rotate(-4deg); } }
+    @media (prefers-reduced-motion: reduce) { .stmt-arrow { animation: none; } }
+
+    /* recolore as 3 bolinhas da moldura de Efeitos pras cores reais do macOS */
+    .mo-dots span:nth-child(1){ background:#FF5F57 !important; }
+    .mo-dots span:nth-child(2){ background:#FFBD2E !important; }
+    .mo-dots span:nth-child(3){ background:#28CA41 !important; }
+
+    /* eyebrow vira sticker quando marcado */
+    /* qualquer eyebrow com .y2k-sticker perde os tracinhos decorativos */
+    .y2k-sticker::before, .y2k-sticker::after { display: none !important; }
+    @media (max-width: 760px) { .proj-seal, .ctt-postit { display: none; } }
+
+    /* ── Serviços em LIQUID GLASS (vidro fosco, estilo iOS) ── */
+    .svc-card {
+      background: rgba(255,255,255,.055) !important;
+      -webkit-backdrop-filter: blur(18px) saturate(1.5);
+      backdrop-filter: blur(18px) saturate(1.5);
+      border: 1px solid rgba(255,255,255,.14) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 26px 54px -28px rgba(0,0,0,.6) !important;
+    }
+    [data-theme="light"] .svc-card {
+      background: rgba(255,255,255,.5) !important;
+      border-color: rgba(42,39,64,.10) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 26px 54px -28px rgba(42,39,64,.26) !important;
+    }
+    /* GLITTER na flor da Hera (brilhinhos que piscam sobre as pétalas) */
+    .svc-sticker::after {
+      content: ''; position: absolute; inset: 10% 10% 14% 10%; pointer-events: none; z-index: 3;
+      background:
+        radial-gradient(circle 1.7px at 28% 24%, #fff, transparent 60%),
+        radial-gradient(circle 1.3px at 62% 18%, #fff, transparent 60%),
+        radial-gradient(circle 2px   at 48% 42%, #fff, transparent 60%),
+        radial-gradient(circle 1.3px at 24% 58%, #fff, transparent 60%),
+        radial-gradient(circle 1.7px at 70% 60%, #fff, transparent 60%),
+        radial-gradient(circle 1.3px at 44% 74%, #fff, transparent 60%),
+        radial-gradient(circle 1.5px at 82% 40%, #fff, transparent 60%);
+      mix-blend-mode: screen; animation: glitter-twinkle 2.2s ease-in-out infinite;
+    }
+    .svc-sticker::before {
+      content: ''; position: absolute; inset: 10% 10% 14% 10%; pointer-events: none; z-index: 3;
+      background:
+        radial-gradient(circle 1.5px at 40% 30%, #FFF6C8, transparent 60%),
+        radial-gradient(circle 1.3px at 58% 52%, #FFF6C8, transparent 60%),
+        radial-gradient(circle 1.5px at 32% 70%, #FFF6C8, transparent 60%),
+        radial-gradient(circle 1.3px at 75% 72%, #FFF6C8, transparent 60%);
+      mix-blend-mode: screen; animation: glitter-twinkle 2.2s ease-in-out infinite reverse; animation-delay: -1.1s;
+    }
+    @keyframes glitter-twinkle { 0%,100%{ opacity:.3; } 50%{ opacity:1; } }
+    @media (prefers-reduced-motion: reduce) { .svc-sticker::after, .svc-sticker::before { animation: none; opacity: .7; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tilt-a, .tilt-b, .tilt-c, .y2k-sticker, .y2k-postit, .y2k-seal { rotate: 0deg; }
+    }
 
     /* ═══════════ NAV ═══════════ */
     nav {
@@ -230,7 +434,7 @@
       transition: background-color .8s ease;
     }
     [data-theme="light"] .hero {
-      background-color: #FAF1EB;
+      background-color: #F2E9D9;
       background-image:
         radial-gradient(ellipse 72% 66% at 0% 106%,  hsla(342, 82%, 58%, .6) 0%, hsla(342, 78%, 54%, .28) 26%, transparent 62%),
         radial-gradient(ellipse 78% 72% at 100% 0%,  hsla(234, 90%, 60%, .5) 0%, hsla(234, 88%, 56%, .26) 26%, transparent 62%),
@@ -292,11 +496,15 @@
       margin-top: clamp(18px, 2.6vh, 28px);
       transition: color .8s ease;
     }
-    [data-theme="light"] .hero-sub { color: rgba(10,10,10,.72); }
+    [data-theme="light"] .hero-sub { color: rgba(8,8,8,.86);
+      text-shadow: 0 1px 10px rgba(255,255,255,.82), 0 0 2px rgba(255,255,255,.6); }
     [data-theme="light"] .hero-title {
       color: #0A0A0A;
-      text-shadow: 0 4px 60px rgba(255,255,255,.45);
+      /* contorno branco (sticker) — garante leitura sobre o gradiente cobalto, sem falha */
+      -webkit-text-stroke: 2.5px #fff; paint-order: stroke fill;
+      text-shadow: 0 3px 22px rgba(255,255,255,.6);
     }
+    @media (max-width: 720px){ [data-theme="light"] .hero-title { -webkit-text-stroke-width: 1.8px; } }
     .hero-title em {
       font-style: normal; font-weight: 800;
       color: #FFFFFF;            /* branco puro, contrasta com todas as cores do sunset */
@@ -415,7 +623,7 @@
       font-size: 17px; line-height: 1.7; color: var(--dim); margin-bottom: 26px;
     }
     .is-bio strong { color: var(--ink); font-weight: 600; }
-    .is-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .is-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: clamp(38px, 5vh, 62px); }
     .is-btn {
       padding: 10px 18px; border-radius: 10px;
       font-size: 13px; font-weight: 500;
@@ -527,15 +735,27 @@
     .proj-grid {
       display: flex; flex-wrap: wrap; justify-content: center;
       gap: 18px;
+      position: relative; z-index: 1;
+      padding: clamp(24px, 3.5vw, 44px) clamp(16px, 2.8vw, 36px);
     }
+    /* folhão de papel REAL (textura gerada: amassado + rasgo com fibra) */
+    .proj-grid::before { content:''; position:absolute; inset:-14px -10px; z-index:-1; rotate:-.5deg;
+      background: url('img/papel-real.png');
+      background-size: 100% 100%;
+      filter: drop-shadow(0 30px 34px rgba(0,0,0,.45)) drop-shadow(0 6px 10px rgba(0,0,0,.3));
+    }
+    /* fitas washi segurando o papel */
+    .proj-grid::after { content:''; position:absolute; z-index:2; top:-12px; left:50%; width:120px; height:30px;
+      transform:translateX(-50%) rotate(-3deg); background:var(--y2k-tape); border-radius:2px; pointer-events:none;
+      box-shadow: 0 2px 6px rgba(0,0,0,.12); }
     .proj-grid > .proj-card { flex: 1 1 300px; max-width: calc((100% - 36px) / 3); }
     @media (max-width: 980px) { .proj-grid > .proj-card { max-width: calc((100% - 18px) / 2); } }
     @media (max-width: 640px) { .proj-grid > .proj-card { max-width: 100%; } }
     /* agrupamento por tipo (via order, sem mexer no DOM) */
     .proj-group { flex: 0 0 100%; width: 100%; display: flex; align-items: center; gap: 14px;
       font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 13px;
-      letter-spacing: .16em; text-transform: uppercase; color: var(--light); }
-    .proj-group::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+      letter-spacing: .16em; text-transform: uppercase; color: rgba(25,21,18,.62); } /* escuro: fica sobre o papel */
+    .proj-group::after { content: ''; flex: 1; height: 1px; background: rgba(25,21,18,.18); }
     .proj-grid .lbl-site { order: 0; }
     .proj-grid .site     { order: 1; }
     .proj-grid .lbl-sys  { order: 2; margin-top: 18px; }
@@ -1073,11 +1293,44 @@
   <div id="hero-shader-mount" aria-hidden="true"></div>
 
   <div class="hero-lead">
-    <h1 class="hero-title">Sites e sistemas<br/>pra sua marca<br/><em>florescer</em>.</h1>
-    <p class="hero-sub">O seu negócio já tem valor. Eu crio o site que mostra isso ao mundo e o sistema que organiza o seu dia a dia. Sob medida, do rascunho ao ar.</p>
+    <h1 class="hero-title">Sites e sistemas<br/>pra sua marca<br/><em style="position:relative; display:inline-block">florescer<svg class="doodle dood-draw" viewBox="0 0 320 150" preserveAspectRatio="none" style="left:-15%; top:-30%; width:130%; height:168%; z-index:-1"><path pathLength="100" d="M60,74 C44,32 128,18 190,21 C266,24 306,46 296,78 C287,106 210,124 132,118 C56,112 18,92 42,58 C52,44 70,37 92,36" stroke="#E8447A" stroke-width="3.4"/></svg></em>. <span class="y2k-spark" style="font-size:.5em;vertical-align:middle">✦</span></h1>
+    <p class="hero-sub">O seu negócio já tem valor. Eu só mostro isso pro mundo: um site que apresenta a sua marca e um sistema que organiza a sua rotina. <span class="is-mark mark-yellow" style="color:#191512">Sob medida, do rascunho ao ar.</span></p>
   </div>
   <div class="hero-fade" aria-hidden="true"></div>
 </section>
+<!-- TYPEWRITER BRIDGE -->
+<section class="tw-bridge rv">
+  <div class="tw-text">
+    Sites que <span class="tw-word" id="tw-word">vendem</span><span class="tw-cursor"></span>
+  </div>
+</section>
+
+<!-- STATEMENT + GRAIN -->
+<section class="intro-stmt rv">
+  <div class="is-heading">
+    <h1>Design que <span class="is-mark mark-yellow" style="color:#191512">encanta</span>.<br/>Código que <span class="is-mark">funciona.</span></h1>
+  </div>
+  <div class="is-lead">
+    <p class="is-bio">
+      Junto <strong>estratégia e design</strong> para criar sites e sistemas que ajudam o seu negócio a vender mais e a funcionar melhor no dia a dia, cuidando de cada detalhe do início ao fim.
+    </p>
+    <div class="is-actions" style="position:relative">
+      <svg class="doodle dood-draw stmt-arrow" viewBox="0 0 96 78" style="left:8px; top:-56px; width:82px; height:66px"><path pathLength="100" d="M16,8 C56,0 64,34 50,62" stroke="#4B57FF" stroke-width="4"/><path pathLength="100" d="M34,48 L51,66 L67,46" stroke="#4B57FF" stroke-width="4"/></svg>
+      <a href="#proj" class="is-btn primary">Ver projetos</a>
+      <a href="#ctt" class="is-btn ghost">Falar comigo →</a>
+    </div>
+  </div>
+  <div class="mac-win win-term stmt-term" style="position:absolute; right:clamp(24px,5vw,56px); top:clamp(70px,14vh,150px); width:340px; z-index:2">
+    <div class="win-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="win-title">paloma@hera ~ %</span></div>
+    <div class="win-body">
+      <span class="t-dim">$</span> <span class="t-blue">npm</span> run deploy<br/>
+      <span class="t-green">✓</span> build compilado <span class="t-dim">em 1.2s</span><br/>
+      <span class="t-green">✓</span> tudo no ar <span class="t-pink">✦</span><br/>
+      <span class="t-dim">$</span> <span class="t-cur"></span>
+    </div>
+  </div>
+</section>
+<style>@media (max-width: 980px){ .stmt-term { display: none; } }</style>
 
 <!-- SERVIÇOS — o que eu faço (substituiu o carrossel 3D) -->
 <style>
@@ -1198,6 +1451,9 @@
 </style>
 
 <section id="servicos" class="svc-section">
+  <span class="y2k-spark" aria-hidden="true" style="position:absolute; left:4%; top:32%; font-size:22px; z-index:1; animation: glitter-twinkle 2.6s ease-in-out infinite">✦</span>
+  <span class="y2k-spark" aria-hidden="true" style="position:absolute; left:8%; bottom:16%; font-size:15px; color:var(--blue); z-index:1; animation: glitter-twinkle 2s ease-in-out infinite; animation-delay:-.7s">✦</span>
+  <span class="y2k-spark" aria-hidden="true" style="position:absolute; right:4%; bottom:22%; font-size:18px; z-index:1; animation: glitter-twinkle 2.3s ease-in-out infinite; animation-delay:-1.2s">✦</span>
   <div class="svc-sticker" id="svc-sticker" role="img" aria-label="Adesivo de flor metálica, arraste pra brincar">
     <svg viewBox="0 0 220 226">
       <defs>
@@ -1234,7 +1490,7 @@
     <span class="hint">me arrasta ✨</span>
   </div>
   <header class="svc-head rv">
-    <div class="svc-eyebrow">Serviços</div>
+    <div class="svc-eyebrow y2k-sticker">✦ Serviços</div>
     <h2 class="svc-title">O que eu <em>faço</em> por você.</h2>
     <p class="svc-sub">Seja um sistema, um site ou uma página de vendas, eu cuido de tudo: do primeiro rascunho até o resultado funcionando de verdade.</p>
   </header>
@@ -1242,7 +1498,7 @@
   <div class="svc-grid" id="svc-grid">
     <article class="svc-card">
       <span class="svc-num">01</span>
-      <h3 class="svc-name">Sistemas Web</h3>
+      <h3 class="svc-name">🧩 Sistemas Web</h3>
       <div class="svc-desc">
         <p>Um programa feito sob medida pra resolver o que trava o seu dia a dia. Você usa pelo computador, pelo celular ou por um aplicativo, do jeito que for melhor pra você.</p>
         <p>Sabe aquele problema que hoje vive na planilha ou no caderno? Dá pra resolver. Por exemplo: controlar estoque, organizar agendamentos, cadastrar clientes e acompanhar vendas.</p>
@@ -1258,7 +1514,7 @@
 
     <article class="svc-card">
       <span class="svc-num">02</span>
-      <h3 class="svc-name">Sites</h3>
+      <h3 class="svc-name">🌸 Sites</h3>
       <div class="svc-desc">
         <p>A casa da sua marca na internet. O lugar pra onde você manda quem quer te conhecer, comprar ou fechar negócio.</p>
         <p>Com a sua cara, bonito e leve, funcionando perfeito no celular e no computador.</p>
@@ -1273,7 +1529,7 @@
 
     <article class="svc-card">
       <span class="svc-num">03</span>
-      <h3 class="svc-name">Landing Pages</h3>
+      <h3 class="svc-name">🎯 Landing Pages</h3>
       <div class="svc-desc">
         <p>Uma página só, feita pra vender uma coisa específica: um produto, um serviço ou um evento.</p>
         <p>Cada palavra e cada botão são pensados pra levar a pessoa a agir, seja comprar, agendar ou chamar você.</p>
@@ -1301,13 +1557,259 @@
   </div>
 </div>
 
+<!-- ══ O PASSEIO DA HERA · você (cabeça real + pés desenhados) passeia pela galeria dos sonhos (corredor desliza) ══ -->
+<style>
+  .pz-pista { position: relative; height: 440vh; }
+  .pz-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; background:#0B0A0A; }
+  [data-theme="light"] .pz-stage { background: var(--white); }
+  /* o MUNDO (corredor + quadros flutuantes) desliza — você desce a galeria */
+  .pz-mundo { position:absolute; top:0; left:0; height:100%; aspect-ratio: 2172/724; z-index:1; will-change:transform; }
+  .pz-pano { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  /* ── QUADROS FLUTUANTES (soltos, na frente do corredor) ── */
+  .pz-quadro { position:absolute; left:var(--qx); top:var(--qy); width:var(--qw); z-index:2;
+    transform: translate3d(calc(var(--px,0)*1px), calc(var(--py,0)*1px), 0) rotate(var(--rot,0deg)); will-change:transform; }
+  .pz-qin { animation: pz-sway var(--swd,6.5s) ease-in-out infinite alternate; transform-origin:top center; }
+  @keyframes pz-sway { from { transform: rotate(-1.1deg) translateY(0); } to { transform: rotate(1.3deg) translateY(7px); } }
+  .pz-moldura { background:#FBF6EC; padding:5.5% 5.5% 4.5%; border:3px solid #C9A253;
+    box-shadow: inset 0 0 0 2px #E7CE93, 0 30px 50px -18px rgba(15,8,4,.55), 0 10px 18px -8px rgba(15,8,4,.4); }
+  .pz-moldura img { display:block; width:100%; height:auto; }
+  .pz-etq { margin-top:9px; display:flex; justify-content:center; }
+  .pz-etq span { display:inline-block; background:linear-gradient(180deg,#EFD9A5,#C9A253); color:#4A3512;
+    font-family:'Inter',sans-serif; font-size:clamp(8px,.62vw,12px); font-weight:600; letter-spacing:.04em;
+    padding:4px 12px; border-radius:3px; box-shadow:0 6px 12px -6px rgba(15,8,4,.5); white-space:nowrap; }
+  /* placa de museu (a piada) */
+  .pz-placa { position:absolute; left:var(--qx); top:var(--qy); z-index:2; width:var(--qw);
+    transform: translate3d(calc(var(--px,0)*1px), calc(var(--py,0)*1px), 0) rotate(var(--rot,0deg)); will-change:transform; }
+  .pz-placa-in { background:#F6EFE2; border:2px solid #C9A253; border-radius:6px; padding:clamp(8px,1vw,18px) clamp(10px,1.2vw,22px);
+    box-shadow: inset 0 0 0 2px #E7CE93, 0 24px 44px -16px rgba(15,8,4,.55); text-align:center;
+    animation: pz-sway var(--swd,7.5s) ease-in-out infinite alternate; transform-origin:top center; }
+  .pz-placa-in b { display:block; font-family:'Inter',sans-serif; font-size:clamp(10px,.85vw,16px); font-weight:700;
+    color:#3E2E10; letter-spacing:.05em; text-transform:uppercase; }
+  .pz-placa-in i { display:block; margin-top:4px; font-family:'Caveat',cursive; font-style:normal;
+    font-size:clamp(13px,1.15vw,22px); color:var(--rose); }
+  /* folhagem viva em primeiro plano (desliza mais rápido = profundidade) */
+  .pz-front { position:absolute; top:0; left:0; height:100%; aspect-ratio: 2172/724; z-index:3; pointer-events:none; will-change:transform; }
+  .pz-leaf { position:absolute; bottom:-5vh; width:auto; filter:blur(2.4px) drop-shadow(0 10px 24px rgba(0,0,0,.5)); opacity:.72;
+    transform-origin:bottom center; animation: pz-leafsway var(--lsd,5.5s) ease-in-out infinite alternate; }
+  @keyframes pz-leafsway { from { transform: rotate(-2.2deg); } to { transform: rotate(2.4deg); } }
+  /* brilho suave que segue o mouse */
+  .pz-glow { position:absolute; inset:0; z-index:4; pointer-events:none; mix-blend-mode:soft-light; opacity:.9;
+    background: radial-gradient(380px 380px at var(--gx,50%) var(--gy,42%), rgba(255,240,200,.75), transparent 70%); }
+  /* pétalas voando ao vento */
+  .pz-petal { position:absolute; top:-6vh; width:15px; height:19px; z-index:4; pointer-events:none;
+    border-radius:62% 62% 60% 60% / 74% 74% 40% 40%;
+    background:radial-gradient(circle at 38% 28%, #FCD3E4, #E8447A); opacity:0;
+    filter:drop-shadow(0 2px 5px rgba(232,68,122,.28)); will-change:transform; animation:pz-petal linear infinite; }
+  @keyframes pz-petal {
+    0%   { opacity:0; transform:translateY(-6vh) translateX(0) rotate(0deg) scale(.9); }
+    8%   { opacity:.9; }
+    92%  { opacity:.85; }
+    100% { opacity:0; transform:translateY(112vh) translateX(var(--drift,80px)) rotate(560deg) scale(1.05); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .pz-petal { display:none; }
+    .pz-qin, .pz-placa-in, .pz-leaf { animation:none; }
+  }
+  .pz-fade { position:absolute; left:0; right:0; z-index:5; pointer-events:none; }
+  .pz-fade--top { top:0;    height:26vh; background:linear-gradient(180deg,#0B0A0A 6%, transparent); }
+  .pz-fade--bot { bottom:0; height:14vh; background:linear-gradient(0deg,  #0B0A0A 24%, transparent); }
+  [data-theme="light"] .pz-fade--top { background:linear-gradient(180deg,var(--white) 6%, transparent); }
+  [data-theme="light"] .pz-fade--bot { background:linear-gradient(0deg, var(--white) 14%, transparent); }
+  /* SKATISTA = colagem: cabeça REAL + pés DESENHADOS; fica fixa, o corredor é que desliza */
+  .pz-skater { position:absolute; left:50%; bottom:5vh; z-index:6; width:clamp(150px,14vw,220px);
+    transform:translateX(-50%); will-change:transform; }
+  .pz-collage { position:relative; width:100%; aspect-ratio:1/1.55; }
+  .pz-head { position:absolute; left:50%; bottom:33%; width:80%; transform:translateX(-50%); z-index:3;
+    filter:drop-shadow(0 8px 10px rgba(0,0,0,.32)); }
+  .pz-legs { position:absolute; left:50%; bottom:0; width:86%; transform:translateX(-50%); z-index:2; }
+  .pz-legs svg { width:100%; height:auto; display:block; overflow:visible; }
+  .pz-stick { filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+    drop-shadow(1.4px 1.4px 0 #fff) drop-shadow(-1.4px 1.4px 0 #fff) drop-shadow(1.4px -1.4px 0 #fff) drop-shadow(-1.4px -1.4px 0 #fff)
+    drop-shadow(0 8px 8px rgba(0,0,0,.32)); }
+  .pz-legenda { position:absolute; left:clamp(20px,5vw,56px); top:clamp(66px,10vh,96px); z-index:7; }
+  .pz-frase { font-family:'Caveat',cursive; font-weight:700; font-size:clamp(30px,5vw,58px);
+    color:#FAF7F2; line-height:1; margin-top:12px; text-shadow:0 3px 20px rgba(0,0,0,.7); }
+  .pz-frase b { color:var(--rose); }
+  [data-theme="light"] .pz-frase { color:#191512; text-shadow:0 2px 16px rgba(255,255,255,.85); }
+  @media (max-width:720px){ .pz-skater { width:132px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .pz-pista { height:auto; }
+    .pz-stage { position:relative; height:auto; min-height:70vh; }
+    .pz-mundo { position:relative; height:70vh; transform:none !important; }
+    .pz-front, .pz-glow { display:none; }
+  }
+</style>
+<section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
+  <div class="pz-stage" id="pz-stage">
+    <div class="pz-mundo" id="pz-mundo">
+      <img class="pz-pano" src="img/galeria.png" alt="" aria-hidden="true"/>
+
+      <!-- quadros flutuantes: a curadoria da Hera -->
+      <figure class="pz-quadro" style="--qx:7%; --qy:12%; --qw:10%; --rot:1.8deg; --d:30; --swd:7.4s">
+        <div class="pz-qin">
+          <div class="pz-moldura"><img src="img/quadro-crianca.png" alt="A flor da hera desenhada a giz de cera"/></div>
+        </div>
+      </figure>
+
+      <figure class="pz-quadro" style="--qx:29%; --qy:16%; --qw:16%; --rot:1.4deg; --d:44; --swd:7.6s">
+        <div class="pz-qin">
+          <div class="pz-moldura"><img src="img/quadro-criacao.png" alt="A Criação da Hera, paródia de Michelangelo"/></div>
+        </div>
+      </figure>
+
+      <figure class="pz-quadro" style="--qx:55%; --qy:12%; --qw:9.5%; --rot:-2.2deg; --d:52; --swd:6s">
+        <div class="pz-qin">
+          <div class="pz-moldura"><img src="img/quadro-natureza.png" alt="Natureza-morta com a flor hera"/></div>
+        </div>
+      </figure>
+
+      <figure class="pz-quadro" style="--qx:78%; --qy:18%; --qw:15%; --rot:-1.6deg; --d:34; --swd:7s">
+        <div class="pz-qin">
+          <div class="pz-moldura"><img src="img/quadro-piscina.png" alt="A flor da hera boiando na piscina"/></div>
+        </div>
+      </figure>
+    </div>
+
+    <!-- folhagem viva em primeiro plano (samambaia real recortada da própria cena) -->
+    <div class="pz-front" id="pz-front" aria-hidden="true">
+      <img class="pz-leaf" src="img/planta-fg.png" alt="" style="left:9%;  height:38vh; --lsd:5.8s"/>
+      <img class="pz-leaf" src="img/planta-fg.png" alt="" style="left:55%; height:30vh; --lsd:6.9s; opacity:.62"/>
+      <img class="pz-leaf" src="img/planta-fg.png" alt="" style="left:86%; height:42vh; --lsd:5.1s"/>
+    </div>
+
+    <div class="pz-glow" id="pz-glow" aria-hidden="true"></div>
+
+    <span class="pz-petal" style="left:12%; --drift:90px;  animation-duration:9s;   animation-delay:0s"></span>
+    <span class="pz-petal" style="left:30%; --drift:-70px; animation-duration:11s;  animation-delay:-3s"></span>
+    <span class="pz-petal" style="left:52%; --drift:110px; animation-duration:8.5s; animation-delay:-6s"></span>
+    <span class="pz-petal" style="left:68%; --drift:-60px; animation-duration:12s;  animation-delay:-1.5s"></span>
+    <span class="pz-petal" style="left:84%; --drift:80px;  animation-duration:10s;  animation-delay:-8s"></span>
+    <span class="pz-petal" style="left:44%; --drift:60px;  animation-duration:13s;  animation-delay:-10s"></span>
+
+    <div class="pz-fade pz-fade--top"></div>
+    <div class="pz-fade pz-fade--bot"></div>
+
+    <div class="pz-skater" id="pz-skater">
+      <div class="pz-collage">
+        <div class="pz-legs pz-stick" aria-hidden="true">
+          <svg viewBox="0 0 300 260">
+            <defs>
+              <linearGradient id="pz-deck" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#6E7BFF"/><stop offset="1" stop-color="#3A46E0"/></linearGradient>
+            </defs>
+            <!-- SKATE (longboard fininho, glossy) -->
+            <ellipse cx="72" cy="242" rx="15" ry="15" fill="#2A2740"/>
+            <ellipse cx="228" cy="242" rx="15" ry="15" fill="#2A2740"/>
+            <ellipse cx="72" cy="242" rx="8.5" ry="8.5" fill="#E8447A"/>
+            <ellipse cx="228" cy="242" rx="8.5" ry="8.5" fill="#E8447A"/>
+            <ellipse cx="72" cy="242" rx="3" ry="3" fill="#FFD6E4"/>
+            <ellipse cx="228" cy="242" rx="3" ry="3" fill="#FFD6E4"/>
+            <rect x="30" y="223" width="240" height="6" rx="3" fill="#B9A0D8"/>          <!-- trucks -->
+            <path d="M34 210 q-6 0 -6 6 l0 4 q0 6 6 6 l232 0 q6 0 6 -6 l0 -4 q0 -6 -6 -6 z" fill="url(#pz-deck)"/>
+            <rect x="46" y="212" width="150" height="5" rx="2.5" fill="#fff" opacity=".4"/> <!-- brilho -->
+            <circle cx="150" cy="216" r="9" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/> <!-- florzinha (marca) -->
+            <!-- PERNAS (sobem por trás do cabelo, coladas na cabeça) -->
+            <path d="M138 -64 C132 30 118 120 116 176" stroke="#F0C6A4" stroke-width="26" fill="none" stroke-linecap="round"/>
+            <path d="M162 -64 C172 30 184 120 186 176" stroke="#E7BC98" stroke-width="25" fill="none" stroke-linecap="round"/>
+            <!-- BLUSA rosa clara com a flor da hera rabiscada (desenho de criança) -->
+            <path d="M112 -72 h76 v80 q0 8 -8 8 h-60 q-8 0 -8 -8 z" fill="#FFD9E6"/>
+            <path d="M112 -72 h76 v14 h-76 z" fill="#FFC3D9" opacity=".8"/>
+            <!-- florzinha rabiscada bem no vão do cabelo, acima do shorts -->
+            <g stroke="#E8447A" stroke-width="2.2" stroke-linecap="round" fill="#FFB0CC">
+              <circle cx="150" cy="-15" r="5.5"/>
+              <circle cx="159" cy="-9" r="5.2"/>
+              <circle cx="157" cy="1" r="5.5"/>
+              <circle cx="146" cy="4" r="5.2"/>
+              <circle cx="139" cy="-3" r="5.5"/>
+              <circle cx="142" cy="-12" r="5"/>
+            </g>
+            <circle cx="149" cy="-5" r="4.5" fill="#4B57FF"/>
+            <!-- SHORTS framboesa (peça única) -->
+            <path d="M120 6 L180 6 L191 90 Q171 106 156 94 L150 72 L144 94 Q129 106 109 90 Z" fill="#E8447A"/>
+            <path d="M150 6 L180 6 L191 90 Q171 106 156 94 L150 72 Z" fill="#DB2E63" opacity=".55"/>
+            <!-- TÊNIS chunky brancos -->
+            <g>
+              <path d="M92 178 q-30 2 -34 20 q-2 10 10 12 l42 3 q14 1 14 -12 l0 -20 q-16 -6 -32 -3 z" fill="#FFFFFF"/>
+              <path d="M60 196 q-4 8 8 10 l52 3 q10 1 10 -8" fill="none" stroke="#E8447A" stroke-width="4" stroke-linecap="round"/>
+              <path d="M96 182 q6 8 6 16" stroke="#DCD3EA" stroke-width="3" fill="none"/>
+            </g>
+            <g>
+              <path d="M178 178 q30 2 34 20 q2 10 -10 12 l-42 3 q-14 1 -14 -12 l0 -20 q16 -6 32 -3 z" fill="#F6F2EC"/>
+              <path d="M240 196 q4 8 -8 10 l-52 3 q-10 1 -10 -8" fill="none" stroke="#C9AEE8" stroke-width="4" stroke-linecap="round"/>
+              <path d="M204 182 q-6 8 -6 16" stroke="#DCD3EA" stroke-width="3" fill="none"/>
+            </g>
+          </svg>
+        </div>
+        <img class="pz-head" src="img/rosto-cut-b.png" alt="Paloma"/>
+      </div>
+    </div>
+
+    <div class="pz-legenda">
+      <span class="pz-eyebrow y2k-sticker">✦ a galeria</span>
+      <p class="pz-frase">um passeio<br/>pela <b>arte</b>.</p>
+    </div>
+  </div>
+</section>
+<script>
+// O PASSEIO — o corredor desliza; quadros flutuam com ventinho + parallax do mouse; você fica fixa
+(function(){
+  const pista = document.querySelector('.pz-pista'); if(!pista) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const stage  = document.getElementById('pz-stage');
+  const mundo  = document.getElementById('pz-mundo');
+  const front  = document.getElementById('pz-front');
+  const glow   = document.getElementById('pz-glow');
+  const skater = document.getElementById('pz-skater');
+  const legenda= pista.querySelector('.pz-legenda');
+  const quadros= Array.from(pista.querySelectorAll('.pz-quadro, .pz-placa'));
+  if(!mundo || !skater) return;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  let visible=false, raf=0, vel=0, pPrev=0;
+  let mxT=0, myT=0, mx=0, my=0;                    // mouse alvo + suavizado (-0.5..0.5)
+  stage.addEventListener('pointermove', e=>{
+    const b = stage.getBoundingClientRect();
+    mxT = (e.clientX-b.left)/b.width - .5;
+    myT = (e.clientY-b.top)/b.height - .5;
+    if(glow){ glow.style.setProperty('--gx', ((mxT+.5)*100).toFixed(1)+'%'); glow.style.setProperty('--gy', ((myT+.5)*100).toFixed(1)+'%'); }
+  }, {passive:true});
+  stage.addEventListener('pointerleave', ()=>{ mxT=0; myT=0; }, {passive:true});
+  function frame(now){
+    const r = pista.getBoundingClientRect(), vh = innerHeight, vw = innerWidth;
+    const alc = r.height - vh;
+    const p = alc>0 ? clamp(-r.top/alc, 0, 1) : 0;
+    // o corredor desliza (você desce a galeria); a folhagem da frente anda mais rápido (profundidade)
+    const slide = p * (mundo.offsetWidth - vw);
+    mundo.style.transform = 'translate3d('+(-slide).toFixed(1)+'px,0,0)';
+    if(front) front.style.transform = 'translate3d('+(-slide*1.18).toFixed(1)+'px,0,0)';
+    // título de abertura: some suave quando o passeio começa
+    if(legenda) legenda.style.opacity = clamp(1 - (p-0.05)/0.09, 0, 1).toFixed(2);
+    // parallax do mouse nos quadros (suavizado)
+    mx += (mxT-mx)*0.06; my += (myT-my)*0.06;
+    for(const q of quadros){
+      const d = parseFloat(q.style.getPropertyValue('--d')||'30');
+      q.style.setProperty('--px', (-mx*d).toFixed(1));
+      q.style.setProperty('--py', (-my*d*0.6).toFixed(1));
+    }
+    // você fixa: balança + inclina com a velocidade da rolagem
+    vel += ((p - pPrev)*3000 - vel)*0.09; pPrev = p;
+    const carve = clamp(vel,-12,12), bob = Math.sin(now/280)*6;
+    skater.style.transform = 'translateX(-50%) translateY('+bob.toFixed(1)+'px) rotate('+(carve*0.6).toFixed(2)+'deg)';
+    if(visible) raf = requestAnimationFrame(frame);
+  }
+  new IntersectionObserver(([e])=>{
+    if(e.isIntersecting){ if(!visible){ visible=true; raf=requestAnimationFrame(frame); } }
+    else { visible=false; cancelAnimationFrame(raf); }
+  }, {threshold:0}).observe(pista);
+})();
+</script>
+
 <!-- PROJETOS — bento editorial com hover reveal -->
 <section id="proj" class="rv">
-  <header class="p-head">
+  <header class="p-head" style="position:relative">
     <div>
-      <div class="p-eyebrow">Projetos</div>
+      <div class="p-eyebrow y2k-sticker">✦ Projetos</div>
       <h2 class="p-title">Algumas coisas que já <em>criei</em></h2>
-      <p class="p-sub">Projetos reais, no ar de verdade. Abre cada um e explora por dentro.</p>
+      <p class="p-sub">Projetos reais, no ar de verdade. <span class="is-mark mark-sky" style="color:#191512">Abre cada um e explora por dentro.</span></p>
     </div>
   </header>
   <div class="proj-grid">
@@ -1545,28 +2047,6 @@
 </div>
 
 
-<!-- TYPEWRITER BRIDGE -->
-<section class="tw-bridge rv">
-  <div class="tw-text">
-    Sites que <span class="tw-word" id="tw-word">vendem</span><span class="tw-cursor"></span>
-  </div>
-</section>
-
-<!-- STATEMENT + GRAIN -->
-<section class="intro-stmt rv">
-  <div class="is-heading">
-    <h1>Design que <em>encanta</em>.<br/>Código que <span class="is-mark">funciona.</span></h1>
-  </div>
-  <div class="is-lead">
-    <p class="is-bio">
-      Junto <strong>estratégia e design</strong> para criar sites e sistemas que ajudam o seu negócio a vender mais e a funcionar melhor no dia a dia, cuidando de cada detalhe do início ao fim.
-    </p>
-    <div class="is-actions">
-      <a href="#proj" class="is-btn primary">Ver projetos</a>
-      <a href="#ctt" class="is-btn ghost">Falar comigo →</a>
-    </div>
-  </div>
-</section>
 
 <!-- EFEITOS — vitrine da biblioteca Motions (preview ao vivo via iframe) -->
 <style>
@@ -1600,9 +2080,16 @@
     display: inline-flex; align-items: center; gap: 7px; opacity: .85; }
   .mo-note i { width: 7px; height: 7px; border-radius: 50%; background: var(--rose); display: inline-block; flex: none; }
   /* browser frame */
-  .mo-frame { display: block; text-decoration: none; border-radius: 16px; overflow: hidden;
+  .mo-frame { display: block; text-decoration: none; border-radius: 16px; position: relative;
     border: 1px solid var(--vl); background: var(--off); box-shadow: 0 40px 80px -34px rgba(20,10,30,.5);
     transition: transform .3s cubic-bezier(.22,1,.36,1), box-shadow .3s ease; }
+  /* eu de chiclete, espiando por trás da moldura (a bola "cresce" devagarinho) */
+  .mo-chiclete { position: absolute; right: -34px; top: -74px; width: clamp(84px, 8.5vw, 128px);
+    rotate: 10deg; z-index: 3; pointer-events: none; filter: drop-shadow(0 10px 16px rgba(0,0,0,.35));
+    transform-origin: 50% 88%; animation: mo-bubble 4.2s ease-in-out infinite; }
+  @keyframes mo-bubble { 0%,100% { scale: 1; } 50% { scale: 1.06; } }
+  @media (max-width: 899px){ .mo-chiclete { right: -12px; top: -58px; width: 76px; } }
+  @media (prefers-reduced-motion: reduce){ .mo-chiclete { animation: none; } }
   .mo-frame:hover { transform: translateY(-4px); box-shadow: 0 52px 96px -34px rgba(20,10,30,.58); }
   .mo-bar { display: flex; align-items: center; gap: 8px; padding: 12px 14px; background: var(--off);
     border-bottom: 1px solid var(--vl); }
@@ -1654,17 +2141,73 @@
       <div class="mo-live">
         <img class="mo-shot" src="img/motions-preview.jpg" alt="Biblioteca de efeitos Bloom, com preview ao vivo dos efeitos" loading="lazy"/>
       </div>
+      <!-- eu, espiando a biblioteca e fazendo bola de chiclete -->
+      <img class="mo-chiclete" src="img/chiclete.png" alt="" aria-hidden="true"/>
     </a>
   </div>
 </section>
 
-<!-- INTERACTIVE DOTS — "Curiosidade cria tudo" (bolinhas somem onde cursor passa) -->
-<span class="pt-eyebrow rv">passe o cursor pra revelar</span>
-<section class="pt-sec rv">
-  <canvas id="curiosity-canvas"></canvas>
-  <div class="pt-content">
-    <h2>Curiosidade<br/>cria <strong>tudo.</strong></h2>
-    <p class="pt-sub">Você acabou de provar: quem explora, descobre. É assim que nasce cada projeto meu.</p>
+<!-- SOBRE -->
+<style>
+  .mk-about { max-width: 1000px; margin: 0 auto; position: relative; }
+  .mk-about-head { text-align: center; margin-bottom: 40px; }
+  .mk-about-head .s-eyebrow { display: inline-block; }
+  .mk-collage { display: grid; grid-template-columns: 350px 1fr; gap: 44px; align-items: start; position: relative; }
+  .mk-photo-win { rotate: -3deg; }
+  .mk-photo-win .win-body { aspect-ratio: 4/5; }
+  .mk-photo-win img { width: 100%; height: 100%; object-fit: cover; object-position: center 22%; }
+  .mk-col-r { display: flex; flex-direction: column; gap: 22px; padding-top: 14px; }
+  .mk-notes-win { rotate: 1.5deg; }
+  .mk-notes-win .win-body { font-family: 'Inter', sans-serif; font-size: 14.5px; line-height: 1.62; }
+  .mk-notes-win .win-body p { margin: 0 0 11px; }
+  .mk-notes-win .win-body p:last-child { margin: 0; }
+  .mk-notes-win .win-body b { font-weight: 700; }
+  .mk-skills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .mk-seal-a { position: absolute; left: -18px; bottom: -26px; z-index: 3; }
+  .mk-seal-b { position: absolute; right: -14px; top: -30px; z-index: 3; }
+  .mk-postit-s { align-self: flex-start; margin-left: 8px; }
+  @media (max-width: 860px) {
+    .mk-collage { grid-template-columns: 1fr; gap: 30px; }
+    .mk-photo-win { rotate: -2deg; max-width: 320px; margin: 0 auto; }
+    .mk-seal-a, .mk-seal-b { display: none; }
+  }
+</style>
+<section id="sobre" class="rv">
+  <div class="mk-about">
+    <div class="mk-about-head">
+      <span class="s-eyebrow y2k-sticker">✦ Sobre mim</span>
+      <h2 class="s-title" style="margin-top:16px">eu dou forma<br/>às <em class="is-mark mark-yellow" style="color:#191512;font-weight:800">ideias</em>.</h2>
+    </div>
+    <div class="mk-collage">
+      <div style="position:relative">
+        <span class="y2k-washi" style="position:absolute; top:-11px; left:-14px; z-index:4; rotate:-20deg; width:96px; height:26px;"></span>
+        <span class="y2k-washi" style="position:absolute; top:-9px; right:-12px; z-index:4; rotate:16deg; width:78px; height:24px; background:rgba(232,68,122,.38);"></span>
+        <div class="mac-win win-photo mk-photo-win">
+          <div class="win-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="win-title">Photo Booth</span></div>
+          <div class="win-body"><img src="img/sobre-paloma-nova.png" alt="Paloma Vazquez"/></div>
+        </div>
+        <span class="y2k-seal mk-seal-a">do rascunho<br/>ao deploy</span>
+        <span class="y2k-spark" style="position:absolute; right:-6px; bottom:64px; font-size:26px; z-index:3">✦</span>
+      </div>
+      <div class="mk-col-r">
+        <div class="mac-win win-notes mk-notes-win">
+          <div class="win-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="win-title">Notas · sobre.txt</span></div>
+          <div class="win-body">
+            <p>Eu gosto de fazer as coisas com <b>cuidado</b>: colocar personalidade nos detalhes e dar o meu melhor em cada projeto que assino.</p>
+            <p>Tudo começou no <b>Explosion</b>, o nosso salão. Pra ajudar o negócio a crescer, precisei ir muito além da nutrição: fui aprender de identidade visual a site, de sistema a experiência do cliente. E, sem perceber, o <b>design e a tecnologia</b> viraram o que eu faço hoje.</p>
+            <p>Hoje eu crio sites e sistemas do zero, pensados pro seu negócio e pra sua gente. Gosto de juntar duas coisas que quase nunca andam juntas: <b>bonito de ver e gostoso de usar</b>. Sem modelo pronto, sem coisa genérica e sem palavra difícil pra te confundir.</p>
+          </div>
+        </div>
+        <div class="mk-skills">
+          <span class="y2k-pill"><span class="emo">🎨</span> Design</span>
+          <span class="y2k-pill pill-rose"><span class="emo">🧩</span> Sistemas</span>
+          <span class="y2k-pill"><span class="emo">🚀</span> Deploy</span>
+          <span class="y2k-pill pill-yellow"><span class="emo">📱</span> Responsivo</span>
+        </div>
+        <div class="y2k-postit tilt-b mk-postit-s">Design que encanta, <b>código que funciona.</b> ✏️</div>
+        <span class="y2k-seal seal-blue mk-seal-b">100%<br/>sob<br/>medida</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1726,8 +2269,8 @@
 <section id="marca" class="mk-sec rv">
   <div class="mk-inner">
     <div class="mk-copy">
-      <span class="mk-eyebrow">A marca por trás</span>
-      <h2 class="mk-title">Por trás de cada projeto,<br/>uma <em>marca</em>.</h2>
+      <span class="mk-eyebrow y2k-sticker">✦ A marca por trás</span>
+      <h2 class="mk-title">Por trás de cada projeto,<br/>uma <em>marca</em>. <span class="y2k-spark" style="font-size:.6em">✦</span></h2>
       <p class="mk-lead">Hera é o estúdio por trás de cada projeto que eu assino. A ideia é simples: o seu negócio já tem valor, e o meu trabalho é fazer isso aparecer. Não entrego só um site ou um sistema: crio marcas que ocupam o espaço que sempre mereceram.</p>
       <div class="mk-swatches">
         <button class="mk-sw" style="--c:#4B57FF" data-hex="#4B57FF"><span></span>Cobalto</button>
@@ -1743,59 +2286,13 @@
   </div>
 </section>
 
-<!-- SOBRE -->
-<section id="sobre" class="rv">
-  <div class="s-grid">
-    <div class="s-photo">
-      <img src="img/sobre-paloma.jpg" alt="Paloma Vazquez" loading="lazy"/>
-    </div>
-    <div>
-      <span class="s-eyebrow">Sobre</span>
-      <h2 class="s-title">eu dou forma<br/>às <em>ideias</em>.</h2>
-      <div class="s-body">
-        <p>Eu acredito em fazer as coisas com amor e dar o meu melhor em cada uma delas. Foi com o Explosion, o nosso salão de beleza, que precisei me desenvolver muito além da nutrição e adquirir novas habilidades. Mas fazer as coisas do jeito que eu faço hoje não veio de um dia pro outro: foi um aperfeiçoamento construído com o tempo, um projeto de cada vez.</p>
-        <p>Crio sites e sistemas do zero, sob medida, unindo duas coisas que raramente andam juntas: a lógica de algo que funciona de verdade e a beleza de algo que dá gosto de mostrar.</p>
-        <p>Sem modelo pronto e sem termo técnico pra te confundir. Você me conta aonde quer chegar, e eu cuido do caminho, detalhe por detalhe, até estar no ar.</p>
-        <p class="s-kicker">Design que encanta, código que <em>funciona</em>.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="faq-section rv" id="faq">
-  <div class="faq-head">
-    <h2>perguntas <em>frequentes</em></h2>
-  </div>
-  <div class="faq-list">
-    <div class="faq-item">
-      <button class="faq-q">
-        Quanto tempo leva pra entregar um site?
-        <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-      </button>
-      <div class="faq-a">Uma página simples fica pronta em uns 3 dias. Um site completo leva de 1 a 2 semanas, dependendo do tamanho. Já um sistema varia com a complexidade: a partir de 2 semanas, e o prazo exato eu combino com você antes de começar.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        Você entrega o site pronto ou só o design?
-        <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-      </button>
-      <div class="faq-a">Entrego pronto e no ar. Posso cuidar de tudo, do primeiro rascunho até o site funcionando, ou seguir a partir de um design que você já tem.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        Cobra como? Por hora ou projeto?
-        <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-      </button>
-      <div class="faq-a">Por projeto fechado. Você sabe exatamente quanto vai pagar antes de começar, sem surpresa no fim do mês.</div>
-    </div>
-    <div class="faq-item">
-      <button class="faq-q">
-        Faz manutenção depois que o site está pronto?
-        <svg class="faq-q-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
-      </button>
-      <div class="faq-a">Sim. Posso fazer pacote mensal de manutenção ou cobrar por demanda. A gente combina.</div>
-    </div>
+<!-- INTERACTIVE DOTS — "Curiosidade cria tudo" (bolinhas somem onde cursor passa) -->
+<span class="pt-eyebrow rv">passe o cursor pra revelar</span>
+<section class="pt-sec rv">
+  <canvas id="curiosity-canvas"></canvas>
+  <div class="pt-content">
+    <h2>Curiosidade<br/>cria <strong>tudo.</strong></h2>
+    <p class="pt-sub">Você acabou de provar: quem explora, descobre. É assim que nasce cada projeto meu.</p>
   </div>
 </section>
 
@@ -1811,9 +2308,10 @@
 </section>
 
 <!-- CONTATO -->
-<section id="ctt" class="rv">
-  <span class="c-eyebrow">Contato</span>
-  <h2 class="c-title">vamos conversar<br/>sobre o seu <em>projeto?</em></h2>
+<section id="ctt" class="rv" style="position:relative">
+  <span class="c-eyebrow y2k-sticker">✦ Contato</span>
+  <h2 class="c-title">vamos conversar<br/>sobre o seu <em>projeto?</em> <span class="y2k-spark" style="font-size:.6em">✦</span></h2>
+  <div class="y2k-postit tilt-c ctt-postit" style="position:absolute; right:clamp(14px,4vw,70px); top:20px; max-width:190px; z-index:3">respondo <b>rapidinho</b> ⚡<br/>sem compromisso, é só o primeiro passo.</div>
   <p class="c-lead">Me conta um pouco sobre o que você precisa. Sem compromisso, é só o primeiro passo.</p>
 
   <form class="c-form" id="c-form">
@@ -1843,54 +2341,75 @@
   </form>
 </section>
 
-<!-- FECHAMENTO -->
-<section class="robot-sec rv">
-  <span class="close-bloom" aria-hidden="true">
-    <svg viewBox="0 0 220 226">
-      <defs>
-        <linearGradient id="bloom-metal" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#F8DCE8"/>
-          <stop offset=".26" stop-color="#FFFFFF"/>
-          <stop offset=".50" stop-color="#DFB0C6"/>
-          <stop offset=".72" stop-color="#F4CBDC"/>
-          <stop offset="1" stop-color="#C6B7CC"/>
-        </linearGradient>
-        <radialGradient id="bloom-core"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E9C0D3"/></radialGradient>
-      </defs>
-      <g fill="#FFFFFF">
-        <ellipse cx="110" cy="51" rx="37" ry="49"/>
-        <ellipse cx="110" cy="51" rx="37" ry="49" transform="rotate(72 110 113)"/>
-        <ellipse cx="110" cy="51" rx="37" ry="49" transform="rotate(144 110 113)"/>
-        <ellipse cx="110" cy="51" rx="37" ry="49" transform="rotate(216 110 113)"/>
-        <ellipse cx="110" cy="51" rx="37" ry="49" transform="rotate(288 110 113)"/>
-      </g>
-      <g fill="url(#bloom-metal)">
-        <ellipse cx="110" cy="56" rx="31" ry="42"/>
-        <ellipse cx="110" cy="56" rx="31" ry="42" transform="rotate(72 110 113)"/>
-        <ellipse cx="110" cy="56" rx="31" ry="42" transform="rotate(144 110 113)"/>
-        <ellipse cx="110" cy="56" rx="31" ry="42" transform="rotate(216 110 113)"/>
-        <ellipse cx="110" cy="56" rx="31" ry="42" transform="rotate(288 110 113)"/>
-      </g>
-      <circle cx="110" cy="113" r="28" fill="url(#bloom-core)"/>
-    </svg>
-  </span>
-  <p class="robot-q">ficou com alguma <em>dúvida</em>?</p>
-  <p class="robot-sub">é só mandar uma mensagem no formulário aqui em cima ou me chamar no WhatsApp. respondo rapidinho.</p>
+<!-- ══ GRANDE FINAL · o logo "hera" caindo e assentando no fim ══ -->
+<style>
+  /* sem overflow:hidden -> nao corta, as letras vem caindo la de cima */
+  .hera-finale { position: relative; isolation: isolate;
+    min-height: clamp(340px, 62vh, 620px); display: grid; place-items: center;
+    padding: clamp(46px,9vh,110px) 16px clamp(18px,4vh,46px); }
+  /* halo suave atrás das letras */
+  .hera-finale::before { content:''; position:absolute; z-index:-1; left:50%; top:60%; transform:translate(-50%,-50%);
+    width:min(820px,90vw); height:340px; border-radius:50%; filter:blur(72px); opacity:.42; pointer-events:none;
+    background: radial-gradient(closest-side, rgba(34,52,225,.55), transparent 72%),
+                radial-gradient(closest-side, rgba(232,68,122,.2), transparent 70%); }
+  .hf-word { display:flex; align-items:flex-end; line-height:.82;
+    font-family:'Bricolage Grotesque',sans-serif; font-weight:800; letter-spacing:-.05em; }
+  /* azul cobalto PROFUNDO + brilho glossy 3D (filtro #hf-gel) por letra */
+  .hf-l, .hf-dot { display:inline-block; will-change:transform; opacity:0; transform:translateY(-88vh);
+    font-size:clamp(120px, 27vw, 420px); color:#1E2FD6;
+    background:linear-gradient(172deg,#2E42F0 0%,#1B2AD2 46%,#111C93 100%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    filter: url(#hf-gel) drop-shadow(0 10px 14px rgba(9,16,110,.55)); }
+  .hf-dot { margin-left:.02em; }
+  /* cada letra despenca PESADA (gravidade forte) e crava com um quique curto */
+  .hera-finale.drop .hf-l, .hera-finale.drop .hf-dot { animation: hera-drop 1.75s forwards; animation-delay: calc(var(--i) * .2s); }
+  @keyframes hera-drop {
+    0%   { opacity:0; transform:translateY(-88vh) rotate(var(--rot,-12deg)); animation-timing-function:cubic-bezier(.62,0,.95,.35); }  /* cai tortinha e pesada */
+    9%   { opacity:1; }
+    46%  { transform:translateY(-26%) rotate(calc(var(--rot,-12deg) * .6)); }                                 /* ainda torta na queda */
+    58%  { transform:translateY(0) rotate(0deg); animation-timing-function:cubic-bezier(.5,0,.72,1); }        /* crava e endireita */
+    70%  { transform:translateY(-6.5%) rotate(calc(var(--rot,-12deg) * .07)); animation-timing-function:cubic-bezier(.6,0,.9,.4); }  /* quique curto (peso) */
+    83%  { transform:translateY(0) rotate(0deg); animation-timing-function:cubic-bezier(.5,0,.72,1); }
+    92%  { opacity:1; transform:translateY(-1.6%) rotate(0deg); animation-timing-function:cubic-bezier(.6,0,.9,.4); }      /* micro-assentamento */
+    100% { opacity:1; transform:translateY(0) rotate(0deg); }
+  }
+  .hf-spark { position:absolute; pointer-events:none; z-index:1; }
+  @media (max-width:520px){ .hf-word { letter-spacing:-.04em; } }
+  @media (prefers-reduced-motion: reduce) {
+    .hf-l, .hf-dot { opacity:1; transform:none; animation:none !important; }
+  }
+</style>
+<section class="hera-finale" aria-label="hera">
+  <!-- filtro glossy 3D: dá o brilho inflado (tipo balão) igual à referência -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+    <filter id="hf-gel" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5.5" result="blur"/>
+      <feSpecularLighting in="blur" surfaceScale="4.5" specularConstant="0.78" specularExponent="36" lighting-color="#ffffff" result="spec">
+        <feDistantLight azimuth="235" elevation="62"/>
+      </feSpecularLighting>
+      <feComposite in="spec" in2="SourceAlpha" operator="in" result="specClip"/>
+      <feComposite in="SourceGraphic" in2="specClip" operator="arithmetic" k1="0" k2="1" k3="1" k4="0"/>
+    </filter>
+  </defs></svg>
+  <span class="hf-spark y2k-spark" style="left:11%; top:24%; font-size:26px; animation:glitter-twinkle 2.4s ease-in-out infinite">✦</span>
+  <span class="hf-spark y2k-spark" style="right:12%; top:32%; font-size:18px; animation:glitter-twinkle 2s ease-in-out infinite; animation-delay:-.8s">✦</span>
+  <div class="hf-word" aria-hidden="true">
+    <span class="hf-l" style="--i:0; --rot:-15deg">h</span>
+    <span class="hf-l" style="--i:1; --rot:12deg">e</span>
+    <span class="hf-l" style="--i:2; --rot:-9deg">r</span>
+    <span class="hf-l" style="--i:3; --rot:16deg">a</span>
+    <span class="hf-dot" style="--i:4; --rot:-22deg">.</span>
+  </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="f-brand">
-    <img src="img/hera-logo.png" alt="hera." class="f-logo lg-plain"/>
-    <img src="img/hera-logo-branco.png" alt="hera." class="f-logo lg-out"/>
-    <span>© 2026 Paloma Vazquez. Feito com propósito.</span>
-  </div>
-  <div class="f-links">
-    <a href="#home">Topo</a>
-    <a href="#proj">Projetos</a>
-    <a href="#ctt">Contato</a>
-  </div>
-</footer>
+<script>
+// GRANDE FINAL — dispara a queda do "hera" quando o fim entra na tela
+(function(){
+  const fin = document.querySelector('.hera-finale'); if(!fin) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches){ fin.classList.add('drop'); return; }
+  new IntersectionObserver((es,o)=>{ es.forEach(e=>{ if(e.isIntersecting){ fin.classList.add('drop'); o.disconnect(); } }); }, {threshold:.3}).observe(fin);
+})();
+</script>
 
 <script>
 const __reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2416,7 +2935,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
     const next = cur === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
-    try { localStorage.setItem('pv-theme', next); } catch (_) {}
+    try { localStorage.setItem('pv-theme-y2k', next); } catch (_) {}
   });
 
   // Ao abrir no escuro, o sol pisca um pouco pra pessoa notar que dá pra clarear o tema
@@ -3016,7 +3535,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   // cores da marca por tema (framboesa · cobalto · rosa bebê · violeta)
   const THEME_WAVES = {
     dark:  { bg: '#0B0A0A', waves: ['#E8447A', '#4B57FF', '#F9BCD2', '#A855F7', '#1227F1'] },
-    light: { bg: '#FAF1EB', waves: ['#DB2E63', '#1B27DB', '#F9BCD2', '#A855F7', '#4B57FF'] },
+    light: { bg: '#F2E9D9', waves: ['#DB2E63', '#1B27DB', '#F9BCD2', '#A855F7', '#4B57FF'] },
   };
   let pal = THEME_WAVES[document.documentElement.getAttribute('data-theme') || 'dark'];
   new MutationObserver(() => {
