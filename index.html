@@ -2109,18 +2109,24 @@
     background: color-mix(in srgb, var(--ink) 6%, transparent); padding: 5px 12px; border-radius: 999px;
     flex: 1; text-align: center; }
   .mo-shot { display: block; width: 100%; height: auto; }
-  /* preview AO VIVO — o site real rodando dentro do frame */
-  .mo-live { position: relative; overflow: hidden; aspect-ratio: 1280 / 800; background: var(--off);
-    -webkit-mask-image: -webkit-radial-gradient(white, black); /* força o Safari/iOS a recortar o iframe */ }
-  .mo-live .mo-shot { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .mo-iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; border: 0;
-    transform-origin: top left; pointer-events: none;   /* o clique continua indo pro link */
-    opacity: 0; transition: opacity .6s ease; }
-  .mo-iframe.on { opacity: 1; }
-  @media (max-width: 899px) {
-    /* no celular a moldura fica mais alta (o site aparece no layout mobile) */
-    .mo-live { aspect-ratio: 3 / 4; }
-  }
+  /* preview — grade de efeitos em VÍDEO (loop, leve, sem WebGL ao vivo → perfeito no mobile) */
+  .mo-live { position: relative; overflow: hidden; border-radius: 0 0 15px 15px; background: #0c0a12; padding: 12px; }
+  .mo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+  @media (min-width: 900px) { .mo-grid { grid-template-columns: 1fr 1fr 1fr; gap: 12px; } }
+  .mo-tile { position: relative; overflow: hidden; border-radius: 12px; aspect-ratio: 16 / 11;
+    background: #14121b; border: 1px solid rgba(255,255,255,.08); box-shadow: 0 10px 22px -14px rgba(0,0,0,.7); }
+  .mo-tile video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mo-tile-badge { position: absolute; top: 7px; left: 7px; z-index: 2; display: inline-flex; align-items: center; gap: 4px;
+    font-family: 'Inter', sans-serif; font-size: 8.5px; font-weight: 700; letter-spacing: .04em; color: #fff;
+    padding: 3px 8px; border-radius: 999px; background: linear-gradient(120deg, var(--rose), var(--violet));
+    box-shadow: 0 4px 12px -4px rgba(0,0,0,.5); }
+  .mo-tile-lock { position: absolute; top: 6px; right: 6px; z-index: 2; width: 21px; height: 21px; border-radius: 50%;
+    display: grid; place-items: center; background: rgba(10,8,14,.5); backdrop-filter: blur(4px); color: rgba(255,255,255,.85); }
+  .mo-tile-lock svg { width: 10px; height: 10px; }
+  .mo-tile-name { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 18px 10px 8px;
+    font-family: 'Inter', sans-serif; font-size: 10.5px; font-weight: 600; color: #fff;
+    background: linear-gradient(to top, rgba(6,4,10,.86), transparent); }
+  @media (max-width: 480px) { .mo-tile-name { font-size: 9.5px; padding: 15px 8px 7px; } }
 </style>
 <section id="efeitos" class="rv">
   <div class="mo-wrap">
@@ -2148,7 +2154,14 @@
         <div class="mo-url">motions-six.vercel.app</div>
       </div>
       <div class="mo-live">
-        <img class="mo-shot" src="img/motions-preview.jpg" alt="Biblioteca de efeitos Bloom, com preview ao vivo dos efeitos" loading="lazy"/>
+        <div class="mo-grid">
+          <div class="mo-tile"><video src="img/mo/onda-seda.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="mo-tile-badge">✦ Destaque</span><span class="mo-tile-name">Onda de Seda</span></div>
+          <div class="mo-tile"><video src="img/mo/aurora-fluida.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="mo-tile-badge">✦ Destaque</span><span class="mo-tile-name">Aurora Fluida</span></div>
+          <div class="mo-tile"><video src="img/mo/cromo-liquido.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="mo-tile-lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4.5" y="10" width="15" height="10.5" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="mo-tile-name">Cromo Líquido</span></div>
+          <div class="mo-tile"><video src="img/mo/cena-torus-metalico.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="mo-tile-badge">✦ Destaque</span><span class="mo-tile-name">Torus Metálico</span></div>
+          <div class="mo-tile"><video src="img/mo/hero-synthwave.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="mo-tile-lock" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4.5" y="10" width="15" height="10.5" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="mo-tile-name">Feixes de Palco</span></div>
+          <div class="mo-tile"><video src="img/mo/fundo-lava-lamp.mp4" muted loop playsinline preload="metadata" aria-hidden="true"></video><span class="mo-tile-badge">✦ Destaque</span><span class="mo-tile-name">Lava Lamp</span></div>
+        </div>
       </div>
       <!-- eu, espiando a biblioteca e fazendo bola de chiclete -->
       <img class="mo-chiclete" src="img/chiclete.png" alt="" aria-hidden="true"/>
@@ -2180,7 +2193,7 @@
   .mk-postit-s { align-self: flex-start; margin-left: 8px; }
   @media (max-width: 860px) {
     .mk-collage { grid-template-columns: 1fr; gap: 30px; }
-    .mk-photo-win { rotate: -2deg; max-width: 320px; margin: 0 auto; }
+    .mk-photo-win { rotate: 0deg; max-width: 320px; margin: 0 auto; }
     .mk-seal-a, .mk-seal-b { display: none; }
   }
 </style>
@@ -3008,49 +3021,20 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   cards.forEach(c => io.observe(c));
 })();
 
-// ═══════════ Efeitos — preview AO VIVO da biblioteca (iframe escalado) ═══════════
-;(function initMotionsLive() {
-  const live = document.querySelector('.mo-live');
-  if (!live || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  // no celular o site roda no layout mobile dele (viewport 390) só ajustado à moldura;
-  // no desktop roda a 1280 e é reduzido
-  const mob = window.matchMedia('(max-width: 899px)');
-  let frame = null;
-  function fit() {
-    if (!frame) return;
-    const lw = live.clientWidth, lh = live.clientHeight;
-    if (!lw || !lh) return;              // sem medida ainda: não escala errado
-    // Renderiza o site numa largura de GRADE (2 colunas no celular, 3 no desktop) e reduz pra caber:
-    // assim a moldura mostra VÁRIOS efeitos animados de uma vez, não um por vez.
-    // O recorte da moldura (.mo-live) tem overflow:hidden + -webkit-mask (recorta o iframe até no iOS).
-    const baseW = mob.matches ? 760 : 1280;  // 760 = grade 2 col no mobile; 1280 = 3 col no desktop
-    const off   = mob.matches ? 525 : 502;   // onde a galeria de efeitos começa em cada largura
-    const s = lw / baseW;
-    frame.style.width = baseW + 'px';
-    frame.style.transform = `scale(${s})`;
-    frame.style.top = -(off * s) + 'px';
-    frame.style.height = Math.ceil(off + lh / s) + 'px';
-  }
-  const io = new IntersectionObserver(([e]) => {
-    if (!e.isIntersecting) return;
-    io.disconnect();
-    frame = document.createElement('iframe');
-    frame.className = 'mo-iframe';
-    frame.src = 'https://motions-six.vercel.app';
-    frame.setAttribute('tabindex', '-1');
-    frame.setAttribute('aria-hidden', 'true');
-    frame.setAttribute('scrolling', 'no');   // sem barra de rolagem vazando na moldura
-    frame.setAttribute('title', 'Prévia ao vivo da biblioteca de efeitos');
-    frame.addEventListener('load', () => { fit(); frame.classList.add('on'); });
-    live.appendChild(frame);
-    fit();
-    requestAnimationFrame(fit);
-    setTimeout(fit, 300);                     // re-encaixa após o layout assentar
-  }, { rootMargin: '400px' });
-  io.observe(live);
-  // ResizeObserver pega qualquer mudança da moldura (rotação, modo responsivo etc.)
-  if ('ResizeObserver' in window) new ResizeObserver(fit).observe(live);
-  window.addEventListener('resize', fit, { passive: true });
+// ═══════════ Efeitos — grade de vídeos (play/pause conforme visível) ═══════════
+;(function initMotionsVideos() {
+  const vids = document.querySelectorAll('.mo-live video');
+  if (!vids.length) return;
+  // respeita quem prefere menos movimento: deixa os vídeos parados no 1º frame
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      const v = e.target;
+      if (e.isIntersecting) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+      else { v.pause(); }
+    });
+  }, { rootMargin: '150px', threshold: 0.1 });
+  vids.forEach(v => io.observe(v));
 })();
 
 // ═══════════ Marca — clicar no swatch copia o hex ═══════════
