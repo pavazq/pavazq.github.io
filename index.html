@@ -738,11 +738,21 @@
       position: relative; z-index: 1;
       padding: clamp(24px, 3.5vw, 44px) clamp(16px, 2.8vw, 36px);
     }
-    /* folhão de papel REAL (textura gerada: amassado + rasgo com fibra) */
-    .proj-grid::before { content:''; position:absolute; inset:-14px -10px; z-index:-1; rotate:-.5deg;
-      background: url('img/papel-real.png');
-      background-size: 100% 100%;
-      filter: drop-shadow(0 30px 34px rgba(0,0,0,.45)) drop-shadow(0 6px 10px rgba(0,0,0,.3));
+    /* papel amassado ROBUSTO: textura que se REPETE (nunca distorce) + rasgo de altura fixa via máscara */
+    .proj-grid::before { content:''; position:absolute; inset:-12px -8px; z-index:-1; rotate:-.5deg;
+      background:
+        linear-gradient(90deg, transparent 0 44px, rgba(219,46,99,.20) 44px 46px, transparent 46px) left top / auto 100% no-repeat,
+        url('img/papel-tile.png') left top / 300px 300px repeat;
+      filter: drop-shadow(0 22px 28px rgba(0,0,0,.4)) drop-shadow(0 5px 9px rgba(0,0,0,.26));
+      /* rasgo fixo (~40px) em cima e embaixo, independente da altura do bloco */
+      -webkit-mask:
+        url('img/torn-top.png') top left / 256px 40px repeat-x,
+        url('img/torn-bot.png') bottom left / 256px 40px repeat-x,
+        linear-gradient(#000,#000) center / 100% calc(100% - 64px) no-repeat;
+      mask:
+        url('img/torn-top.png') top left / 256px 40px repeat-x,
+        url('img/torn-bot.png') bottom left / 256px 40px repeat-x,
+        linear-gradient(#000,#000) center / 100% calc(100% - 64px) no-repeat;
     }
     /* fitas washi segurando o papel */
     .proj-grid::after { content:''; position:absolute; z-index:2; top:-12px; left:50%; width:120px; height:30px;
