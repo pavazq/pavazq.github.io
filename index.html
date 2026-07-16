@@ -3372,8 +3372,8 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     'https://nanas-crochet.vercel.app': 'nanas',
   };
   // aquece a conexão com o servidor ao passar o mouse — clica e já carrega mais rápido
-  const warmed = new Set();
-  function warm(url) {
+  const warmed = new Set(), prefetched = new Set();
+  function warm(url) {            // aquece só a CONEXÃO (leve) — usado no ocioso
     let origin;
     try { origin = new URL(url).origin; } catch (e) { return; }
     if (warmed.has(origin)) return;
@@ -3383,6 +3383,15 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
       l.rel = rel; l.href = origin; l.crossOrigin = '';
       document.head.appendChild(l);
     });
+  }
+  function preload(url) {         // baixa o app ANTES do clique (na intenção: hover/toque) -> abre do cache
+    if (!url) return;
+    warm(url);
+    if (prefetched.has(url)) return;
+    prefetched.add(url);
+    const l = document.createElement('link');
+    l.rel = 'prefetch'; l.href = url; l.as = 'document';
+    document.head.appendChild(l);
   }
   // acorda os servidores das demos assim que a página fica ociosa — sem esperar clique.
   // um fetch leve tira a Vercel do "sono frio"; quando alguém clicar, já abre rápido.
@@ -3441,7 +3450,10 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     setTimeout(() => { cnt.innerHTML = ''; }, 250);
   }
   document.querySelectorAll('[data-mode][data-url]').forEach(btn => {
-    btn.addEventListener('mouseenter', () => { if (btn.dataset.url) warm(btn.dataset.url); });
+    // hover (desktop) e toque/pressionar (mobile) já começam a baixar o app -> abre rapidinho
+    btn.addEventListener('mouseenter',  () => preload(btn.dataset.url));
+    btn.addEventListener('pointerdown', () => preload(btn.dataset.url));
+    btn.addEventListener('touchstart',  () => preload(btn.dataset.url), { passive: true });
     btn.addEventListener('click', () => {
       if (btn.disabled) return;
       const mode  = btn.dataset.mode;
@@ -3460,6 +3472,17 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
       }
       if (mode === 'mobile')  openModal(buildMobile(url));
     });
+  });
+  // botão "Abrir" principal: no celular/sistema ele abre direto -> pré-carrega o app na intenção
+  document.querySelectorAll('.proj-open-btn').forEach(btn => {
+    const firstUrl = () => {
+      const w = btn.parentElement && btn.parentElement.querySelector('.proj-open-menu button[data-url]');
+      return w ? w.dataset.url : null;
+    };
+    const go = () => preload(firstUrl());
+    btn.addEventListener('mouseenter', go);
+    btn.addEventListener('pointerdown', go);
+    btn.addEventListener('touchstart', go, { passive: true });
   });
   close.addEventListener('click', closeModal);
   bg.addEventListener('click', e => { if (e.target === bg) closeModal(); });
