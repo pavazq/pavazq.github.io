@@ -409,6 +409,21 @@
       .n-logo-img { height: 36px; }
       .n-cta { padding: 6px 14px !important; font-size: 12.5px; }  /* mais fino no mobile */
     }
+    /* ═══ PERFORMANCE mobile: backdrop-filter (blur) TRAVA o scroll no celular ═══
+       A nav fixa é a pior (re-desfoca o conteúdo a cada frame de scroll). Os fundos
+       já são quase opacos, então dá pra tirar o blur sem mudar o visual. */
+    @media (max-width: 860px) {
+      nav {
+        -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+        background: rgba(9,7,11,.97) !important;
+      }
+      [data-theme="light"] nav { background: rgba(250,250,250,.97) !important; }
+      .svc-card, .mo-frame, .pt-hint-chip, .svc-sticker .hint, .svc-modal-bg {
+        -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+      }
+      .svc-card { background: rgba(24,20,32,.92) !important; }
+      [data-theme="light"] .svc-card { background: rgba(255,255,255,.92) !important; }
+    }
     @media (max-width: 420px) {
       nav { padding: 0 14px; }
       .n-logo { font-size: 13px; }
@@ -1867,10 +1882,14 @@
     skater.style.transform = 'translateX(-50%) translateY('+bob.toFixed(1)+'px) rotate('+(carve*0.6).toFixed(2)+'deg)';
     if(visible) raf = requestAnimationFrame(frame);
   }
-  new IntersectionObserver(([e])=>{
-    if(e.isIntersecting){ if(!visible){ visible=true; raf=requestAnimationFrame(frame); } }
-    else { visible=false; cancelAnimationFrame(raf); }
-  }, {threshold:0}).observe(pista);
+  // no mobile o passeio é ESTÁTICO (imagem parada) — não roda o loop (só travaria à toa)
+  const pzMobile = matchMedia('(max-width: 860px)').matches;
+  if(!pzMobile){
+    new IntersectionObserver(([e])=>{
+      if(e.isIntersecting){ if(!visible){ visible=true; raf=requestAnimationFrame(frame); } }
+      else { visible=false; cancelAnimationFrame(raf); }
+    }, {threshold:0}).observe(pista);
+  }
 })();
 </script>
 
