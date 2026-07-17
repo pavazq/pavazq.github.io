@@ -1751,39 +1751,39 @@
 <section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
   <div class="pz-stage" id="pz-stage">
     <div class="pz-mundo" id="pz-mundo">
-      <img class="pz-pano" src="img/galeria.jpg" alt="" aria-hidden="true"/>
+      <img class="pz-pano" src="img/galeria.jpg" alt="" aria-hidden="true" decoding="async"/>
 
       <!-- quadros flutuantes: a curadoria da Hera -->
       <figure class="pz-quadro" style="--qx:7%; --qy:12%; --qw:10%; --rot:1.8deg; --d:30; --swd:7.4s">
         <div class="pz-qin">
-          <div class="pz-moldura"><img src="img/quadro-crianca.jpg" alt="A flor da hera desenhada a giz de cera"/></div>
+          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-crianca.jpg" alt="A flor da hera desenhada a giz de cera"/></div>
         </div>
       </figure>
 
       <figure class="pz-quadro" style="--qx:29%; --qy:16%; --qw:16%; --rot:1.4deg; --d:44; --swd:7.6s">
         <div class="pz-qin">
-          <div class="pz-moldura"><img src="img/quadro-criacao.jpg" alt="A Criação da Hera, paródia de Michelangelo"/></div>
+          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-criacao.jpg" alt="A Criação da Hera, paródia de Michelangelo"/></div>
         </div>
       </figure>
 
       <figure class="pz-quadro" style="--qx:55%; --qy:12%; --qw:9.5%; --rot:-2.2deg; --d:52; --swd:6s">
         <div class="pz-qin">
-          <div class="pz-moldura"><img src="img/quadro-natureza.jpg" alt="Natureza-morta com a flor hera"/></div>
+          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-natureza.jpg" alt="Natureza-morta com a flor hera"/></div>
         </div>
       </figure>
 
       <figure class="pz-quadro" style="--qx:78%; --qy:18%; --qw:15%; --rot:-1.6deg; --d:34; --swd:7s">
         <div class="pz-qin">
-          <div class="pz-moldura"><img src="img/quadro-piscina.jpg" alt="A flor da hera boiando na piscina"/></div>
+          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-piscina.jpg" alt="A flor da hera boiando na piscina"/></div>
         </div>
       </figure>
     </div>
 
     <!-- folhagem viva em primeiro plano (samambaia real recortada da própria cena) -->
     <div class="pz-front" id="pz-front" aria-hidden="true">
-      <img class="pz-leaf" src="img/planta-fg.png" alt="" style="left:9%;  height:38vh; --lsd:5.8s"/>
-      <img class="pz-leaf" src="img/planta-fg.png" alt="" style="left:55%; height:30vh; --lsd:6.9s; opacity:.62"/>
-      <img class="pz-leaf" src="img/planta-fg.png" alt="" style="left:86%; height:42vh; --lsd:5.1s"/>
+      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:9%;  height:38vh; --lsd:5.8s"/>
+      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:55%; height:30vh; --lsd:6.9s; opacity:.62"/>
+      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:86%; height:42vh; --lsd:5.1s"/>
     </div>
 
     <div class="pz-glow" id="pz-glow" aria-hidden="true"></div>
@@ -3793,8 +3793,13 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Com "reduzir movimento" o gradiente CONTINUA (é o visual da marca) — só fica ESTÁTICO (speed 0).
 
-    // MOBILE: o shader ANIMA por cima da foto do shader (piso). Enquanto carrega ou
-    // se o WebGL falhar, a imagem linda aparece (nunca preto). Quando monta, dá movimento.
+    // MOBILE: NÃO carrega o shader. Ele carrega de forma assíncrona e no celular dava
+    // descompasso ("só quando atualizo vem certo"). No mobile fica a FOTO do shader +
+    // grânulos que se mexem (shimmer CSS) — IGUAL toda vez que entra, sem depender de nada.
+    if (matchMedia('(max-width: 860px)').matches) {
+      console.log('[paper-design] mobile → foto + shimmer (consistente, sem shader)');
+      throw new Error('skip-mobile');
+    }
     // Sem WebGL não tem shader — fica a imagem/gradiente CSS de fallback.
     if (!('WebGLRenderingContext' in window)) {
       console.log('[paper-design] sem-WebGL → mantém gradiente CSS');
