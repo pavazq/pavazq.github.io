@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1500';
+    var BUILD = 'v-20260717-1510';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -1396,10 +1396,6 @@
     <img src="img/hera-logo-branco.png" alt="hera." class="n-logo-img lg-out"/>
   </a>
   <div class="n-links">
-    <a href="#proj">Projetos</a>
-    <a href="#efeitos">Efeitos</a>
-    <a href="#marca">Marca</a>
-    <a href="#sobre" data-mobile-hide>Sobre</a>
     <a href="#ctt" class="n-cta">Fale comigo</a>
     <button class="theme-btn" id="theme-btn" aria-label="Alternar tema">
       <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke-linecap="round" stroke-linejoin="round"/></svg>
