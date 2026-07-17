@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1220';
+    var BUILD = 'v-20260717-1230';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -3916,6 +3916,9 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     console.warn('[paper-design] failed → fallback CSS visible:', err.message);
   }
 </script>
+
+<!-- SELO DE VERSÃO (temporário, pra diagnosticar cache) — mostra na tela qual versão carregou -->
+<div id="ver-selo" style="position:fixed;left:8px;bottom:8px;z-index:2147483647;font:700 12px system-ui,-apple-system,sans-serif;color:#fff;background:#E8447A;padding:5px 10px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,.4);pointer-events:none">v1230 • mexe? 🌸</div>
 
 </body>
 </html>
