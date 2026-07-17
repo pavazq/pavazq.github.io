@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1600';
+    var BUILD = 'v-20260717-1610';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -2346,7 +2346,7 @@
           <div class="win-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="win-title">Notas · sobre.txt</span></div>
           <div class="win-body">
             <p>Eu gosto de fazer as coisas com <b>capricho</b>: colocar personalidade nos detalhes e dar o meu melhor em cada projeto que assino.</p>
-            <p>Eu me formei em nutrição, mas a virada veio no <b>Salão Explosion</b>, o salão da minha família. Pra ajudar o negócio a crescer, fui aprender de identidade visual a site, de sistema a experiência do cliente. E, sem perceber, <b>me apaixonei</b>.</p>
+            <p>Sou <b>nutricionista</b> de formação — e continuo sendo. No <b>Salão Explosion</b>, o salão da minha família, precisei ir além pra ajudar o negócio a crescer: aprendi de identidade visual a site, de sistema a experiência do cliente. Não troquei uma coisa pela outra, <b>somei</b>. Sou nexialista: gosto de conectar áreas que quase nunca conversam.</p>
             <p>Hoje eu crio sites e sistemas do zero, pensados pro seu negócio. Gosto de juntar duas coisas que quase nunca andam juntas: <b>bonito de ver e fácil de usar</b>. Sem modelo pronto e sem coisa genérica.</p>
           </div>
         </div>
