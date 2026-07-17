@@ -480,26 +480,37 @@
       mix-blend-mode: screen;
     }
     [data-theme="light"] .hero-grain2 { opacity: .06; }
+    /* camada de GRÂNULOS que se mexem (shimmer) por cima da foto do shader — dá MOVIMENTO
+       em qualquer navegador, mesmo onde o shader WebGL não roda (ex: navegador do WhatsApp).
+       Escondida no desktop; no mobile fica sobre a foto (e sob o shader, que anima quando roda). */
+    .hero-photo { display: none; }
+    @keyframes grainCrawl {
+      0%   { transform: translate3d(-7%, -5%, 0); }
+      100% { transform: translate3d(7%, 6%, 0); }
+    }
 
-    /* MOBILE (portrait): usa uma FOTO em alta do próprio shader como fundo — fica IDÊNTICO
-       ao "antes" (mesma cor, mesmos grânulos) e por ser imagem SEMPRE carrega, nunca falha.
-       Grão CSS escondido (já está na imagem). No tema claro mantém o gradiente CSS. */
+    /* MOBILE (portrait): FOTO do shader (cor+grânulos, IDÊNTICO ao "antes", SEMPRE carrega)
+       + grânulos que SE MEXEM por cima (movimento garantido) + shader real por cima quando roda. */
     @media (max-width: 860px) {
-      .hero {
-        background-image: url('img/hero-mobile.jpg') !important;
-        background-size: cover !important;
-        background-position: center center !important;
-        background-repeat: no-repeat !important;
+      .hero { background: #0B0A0A url('img/hero-mobile.jpg') center center / cover no-repeat !important; }
+      .hero-photo {
+        display: block; position: absolute; inset: -55%; z-index: 1; pointer-events: none;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='ng'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23ng)'/></svg>");
+        opacity: .5; mix-blend-mode: overlay;
+        animation: grainCrawl 5s ease-in-out infinite alternate;
+        will-change: transform;
       }
       .hero-grain, .hero-grain2 { display: none; }
       [data-theme="light"] .hero {
+        background: #F2E9D9 !important;
         background-image:
           radial-gradient(ellipse 72% 128% at 122% 30%, hsla(232,90%,60%,.55) 0%, hsla(244,86%,56%,.3) 26%, transparent 64%),
           radial-gradient(ellipse 58% 95% at -20% 74%, hsla(322,82%,58%,.42) 0%, transparent 58%),
           radial-gradient(ellipse 62% 52% at -8% 112%, hsla(342,80%,58%,.32) 0%, transparent 55%),
           radial-gradient(ellipse 96% 42% at 82% -10%, hsla(256,78%,60%,.26) 0%, transparent 60%) !important;
       }
-      [data-theme="light"] .hero-grain { display: block; }
+      [data-theme="light"] .hero-photo { display: none; }
+      @media (prefers-reduced-motion: reduce) { .hero-photo { animation: none; } }
     }
 
     /* CAMADA SHADER REAL — paper-design GrainGradient (canvas WebGL), por cima do CSS */
@@ -1377,6 +1388,7 @@
 <section class="hero" id="home">
   <div class="hero-grain" aria-hidden="true"></div>
   <div class="hero-grain2" aria-hidden="true"></div>
+  <div class="hero-photo" aria-hidden="true"></div>
   <div id="hero-shader-mount" aria-hidden="true"></div>
 
   <div class="hero-lead">
