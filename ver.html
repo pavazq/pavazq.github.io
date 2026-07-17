@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1300';
+    var BUILD = 'v-20260717-1310';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -3819,13 +3819,9 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Com "reduzir movimento" o gradiente CONTINUA (é o visual da marca) — só fica ESTÁTICO (speed 0).
 
-    // MOBILE: NÃO carrega o shader. Ele baixa da internet (1-2s) e dava o "pulo" feio
-    // (imagem parada → aí o efeito aparece). No mobile o movimento é 100% CSS (aurora +
-    // grânulos): aparece NA HORA, igual todo clique, sem baixar nada, sem pulo.
-    if (matchMedia('(max-width: 860px)').matches) {
-      console.log('[paper-design] mobile → movimento CSS (instantâneo, sem pulo do shader)');
-      throw new Error('skip-mobile');
-    }
+    // MOBILE: o shader (WebGL) ANIMA por cima da FOTO do shader (piso idêntico). No iPhone
+    // o WebGL anima de verdade (não sofre do bug de mix-blend do Safari). Enquanto ele
+    // carrega, aparece a foto igualzinha → quando entra, é só "começar a mexer", sem pulo.
     // Sem WebGL não tem shader — fica a imagem/gradiente CSS de fallback.
     if (!('WebGLRenderingContext' in window)) {
       console.log('[paper-design] sem-WebGL → mantém gradiente CSS');
