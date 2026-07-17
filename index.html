@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1205';
+    var BUILD = 'v-20260717-1220';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -520,7 +520,7 @@
         display: block; position: absolute; inset: -55%; z-index: 1; pointer-events: none;
         background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='ng'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23ng)'/></svg>");
         opacity: .5; mix-blend-mode: overlay;
-        animation: grainCrawl 3.2s ease-in-out infinite alternate;
+        animation: grainCrawl 3.2s ease-in-out infinite alternate !important;
         will-change: transform;
       }
       .hero-aurora {
@@ -529,12 +529,12 @@
           radial-gradient(46% 42% at 80% 28%, rgba(72,84,255,.42), transparent 68%),
           radial-gradient(44% 42% at 16% 72%, rgba(240,72,150,.36), transparent 68%);
         mix-blend-mode: screen;
-        animation: auroraDrift 7.5s ease-in-out infinite alternate;
+        animation: auroraDrift 7.5s ease-in-out infinite alternate !important;
         will-change: transform, opacity;
       }
       .hero-grain, .hero-grain2 { display: none; }
       [data-theme="light"] .hero-aurora { display: none; }
-      @media (prefers-reduced-motion: reduce) { .hero-aurora { animation: none; } }
+      /* movimento é a assinatura da marca: mantém mesmo com "Reduzir Movimento" (é suave) */
       [data-theme="light"] .hero {
         background: #F2E9D9 !important;
         background-image:
@@ -544,7 +544,7 @@
           radial-gradient(ellipse 96% 42% at 82% -10%, hsla(256,78%,60%,.26) 0%, transparent 60%) !important;
       }
       [data-theme="light"] .hero-photo { display: none; }
-      @media (prefers-reduced-motion: reduce) { .hero-photo { animation: none; } }
+      /* grão continua se mexendo mesmo com "Reduzir Movimento" ligado */
     }
 
     /* CAMADA SHADER REAL — paper-design GrainGradient (canvas WebGL), por cima do CSS */
@@ -1768,7 +1768,7 @@
   @media (prefers-reduced-motion: reduce) {
     .pz-pista { height:auto; }
     .pz-stage { position:relative; height:auto; min-height:70vh; }
-    .pz-mundo { position:relative; height:70vh; transform:none !important; }
+    .pz-mundo { position:relative; height:70vh; transform:none; }
     .pz-front, .pz-glow { display:none; }
   }
   /* MOBILE: galeria NÃO é mais a seção gigante sticky de 440vh (que congelava). Vira uma
@@ -1778,11 +1778,11 @@
     .pz-pista { height:auto !important; }
     .pz-stage { position:relative !important; height:auto !important; min-height:62vh; overflow:hidden; }
     .pz-mundo { position:relative !important; height:62vh; will-change:transform;
-      animation: pzPan 30s ease-in-out infinite alternate; }
+      animation: pzPan 30s ease-in-out infinite alternate !important; }
     .pz-front, .pz-glow, .pz-petal { display:none !important; }
     .pz-qin, .pz-placa-in, .pz-leaf { animation:none !important; }
     .pz-quadro, .pz-placa, .pz-front, .pz-leaf { will-change:auto !important; }
-    @media (prefers-reduced-motion: reduce) { .pz-mundo { animation:none; transform:none !important; } }
+    /* galeria continua deslizando mesmo com "Reduzir Movimento" ligado (é lento e suave) */
   }
   @keyframes pzPan { from { transform: translate3d(0,0,0); } to { transform: translate3d(-58%,0,0); } }
 </style>
