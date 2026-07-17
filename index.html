@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1230';
+    var BUILD = 'v-20260717-1240';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -1765,26 +1765,14 @@
   .pz-frase b { color:var(--rose); }
   [data-theme="light"] .pz-frase { color:#191512; text-shadow:0 2px 16px rgba(255,255,255,.85); }
   @media (max-width:720px){ .pz-skater { width:132px; } }
-  @media (prefers-reduced-motion: reduce) {
-    .pz-pista { height:auto; }
-    .pz-stage { position:relative; height:auto; min-height:70vh; }
-    .pz-mundo { position:relative; height:70vh; transform:none; }
-    .pz-front, .pz-glow { display:none; }
-  }
-  /* MOBILE: galeria NÃO é mais a seção gigante sticky de 440vh (que congelava). Vira uma
-     vitrine que DESLIZA sozinha de leve (animação CSS = transform GPU, leve, não trava).
-     Sub-animações pesadas (sway/petal) e will-change extra continuam desligados. */
+  /* MOBILE: a galeria DESLIZA COM O SCROLL, igual ao desktop (o loop JS controla o transform
+     conforme você rola). Aqui só tiramos o que é de mouse/pesado: pétalas, brilho do mouse,
+     balanços contínuos e will-change extra — assim desliza com o scroll sem travar. */
   @media (max-width: 860px) {
-    .pz-pista { height:auto !important; }
-    .pz-stage { position:relative !important; height:auto !important; min-height:62vh; overflow:hidden; }
-    .pz-mundo { position:relative !important; height:62vh; will-change:transform;
-      animation: pzPan 30s ease-in-out infinite alternate !important; }
-    .pz-front, .pz-glow, .pz-petal { display:none !important; }
+    .pz-glow, .pz-petal { display:none !important; }
     .pz-qin, .pz-placa-in, .pz-leaf { animation:none !important; }
-    .pz-quadro, .pz-placa, .pz-front, .pz-leaf { will-change:auto !important; }
-    /* galeria continua deslizando mesmo com "Reduzir Movimento" ligado (é lento e suave) */
+    .pz-quadro, .pz-placa, .pz-leaf { will-change:auto !important; }
   }
-  @keyframes pzPan { from { transform: translate3d(0,0,0); } to { transform: translate3d(-58%,0,0); } }
 </style>
 <section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
   <div class="pz-stage" id="pz-stage">
@@ -1901,7 +1889,7 @@
 // O PASSEIO — o corredor desliza; quadros flutuam com ventinho + parallax do mouse; você fica fixa
 (function(){
   const pista = document.querySelector('.pz-pista'); if(!pista) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // (a galeria desliza com o scroll IGUAL desktop — roda até no mobile e com "Reduzir Movimento")
   const stage  = document.getElementById('pz-stage');
   const mundo  = document.getElementById('pz-mundo');
   const front  = document.getElementById('pz-front');
@@ -1943,14 +1931,11 @@
     skater.style.transform = 'translateX(-50%) translateY('+bob.toFixed(1)+'px) rotate('+(carve*0.6).toFixed(2)+'deg)';
     if(visible) raf = requestAnimationFrame(frame);
   }
-  // no mobile o passeio é ESTÁTICO (imagem parada) — não roda o loop (só travaria à toa)
-  const pzMobile = matchMedia('(max-width: 860px)').matches;
-  if(!pzMobile){
-    new IntersectionObserver(([e])=>{
-      if(e.isIntersecting){ if(!visible){ visible=true; raf=requestAnimationFrame(frame); } }
-      else { visible=false; cancelAnimationFrame(raf); }
-    }, {threshold:0}).observe(pista);
-  }
+  // o corredor desliza com o scroll (desktop E mobile) — só roda quando a seção está visível
+  new IntersectionObserver(([e])=>{
+    if(e.isIntersecting){ if(!visible){ visible=true; raf=requestAnimationFrame(frame); } }
+    else { visible=false; cancelAnimationFrame(raf); }
+  }, {threshold:0}).observe(pista);
 })();
 </script>
 
@@ -3831,13 +3816,8 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Com "reduzir movimento" o gradiente CONTINUA (é o visual da marca) — só fica ESTÁTICO (speed 0).
 
-    // MOBILE: NÃO carrega o shader. Ele carrega de forma assíncrona e no celular dava
-    // descompasso ("só quando atualizo vem certo"). No mobile fica a FOTO do shader +
-    // grânulos que se mexem (shimmer CSS) — IGUAL toda vez que entra, sem depender de nada.
-    if (matchMedia('(max-width: 860px)').matches) {
-      console.log('[paper-design] mobile → foto + shimmer (consistente, sem shader)');
-      throw new Error('skip-mobile');
-    }
+    // MOBILE: o shader ANIMA por cima da foto do shader (piso). Igual ao desktop.
+    // Se carregar devagar ou falhar, a imagem+brilho aparecem embaixo (nunca preto).
     // Sem WebGL não tem shader — fica a imagem/gradiente CSS de fallback.
     if (!('WebGLRenderingContext' in window)) {
       console.log('[paper-design] sem-WebGL → mantém gradiente CSS');
@@ -3874,7 +3854,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
         shape: 'corners',
         offsetX: 0, offsetY: 0,
         scale: 1, rotation: 0,
-        speed: reduceMotion ? 0 : 1,
+        speed: 1,
         colors: ['hsl(342, 76%, 53%)', 'hsl(234, 88%, 58%)', 'hsl(275, 72%, 60%)'],
       };
     }
@@ -3918,7 +3898,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
 </script>
 
 <!-- SELO DE VERSÃO (temporário, pra diagnosticar cache) — mostra na tela qual versão carregou -->
-<div id="ver-selo" style="position:fixed;left:8px;bottom:8px;z-index:2147483647;font:700 12px system-ui,-apple-system,sans-serif;color:#fff;background:#E8447A;padding:5px 10px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,.4);pointer-events:none">v1230 • mexe? 🌸</div>
+<div id="ver-selo" style="position:fixed;left:8px;bottom:8px;z-index:2147483647;font:700 12px system-ui,-apple-system,sans-serif;color:#fff;background:#E8447A;padding:5px 10px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,.4);pointer-events:none">v1240 · shader+galeria</div>
 
 </body>
 </html>
