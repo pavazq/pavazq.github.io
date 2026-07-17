@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1520';
+    var BUILD = 'v-20260717-1530';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -2423,7 +2423,7 @@
     <div class="mk-copy">
       <span class="mk-eyebrow y2k-sticker">✦ A marca por trás</span>
       <h2 class="mk-title">Por trás de cada projeto,<br/>uma <em>marca</em>. <span class="y2k-spark" style="font-size:.6em">✦</span></h2>
-      <p class="mk-lead">Hera é o estúdio por trás de cada projeto que eu assino. A ideia é simples: o seu negócio já tem valor, e o meu trabalho é fazer isso aparecer. Não entrego só um site ou um sistema: crio marcas que ocupam o espaço que sempre mereceram.</p>
+      <p class="mk-lead">Hera é o estúdio por trás de cada projeto que eu assino. A ideia é simples: o seu negócio já tem valor, e o meu trabalho é fazer isso aparecer. Crio sites, sistemas e landing pages que colocam o seu negócio no espaço que ele sempre mereceu.</p>
       <div class="mk-swatches">
         <button class="mk-sw" style="--c:#4B57FF" data-hex="#4B57FF"><span></span>Cobalto</button>
         <button class="mk-sw" style="--c:#E8447A" data-hex="#E8447A"><span></span>Rosa flor</button>
