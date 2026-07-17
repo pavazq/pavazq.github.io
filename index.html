@@ -3770,14 +3770,9 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Com "reduzir movimento" o gradiente CONTINUA (é o visual da marca) — só fica ESTÁTICO (speed 0).
 
-    // NO MOBILE: NÃO carrega o shader WebGL. No celular ele às vezes renderiza em
-    // branco/preto e cobre o gradiente CSS — fazendo o topo "sumir do nada". No
-    // celular fica SÓ o gradiente CSS + grão (puro CSS, SEMPRE aparece).
-    if (matchMedia('(max-width: 860px)').matches) {
-      console.log('[paper-design] mobile → só gradiente CSS (garantido, sem shader)');
-      throw new Error('skip-mobile');
-    }
-    // Sem WebGL não tem shader — fica o gradiente CSS de fallback.
+    // MOBILE: o shader ANIMA por cima da foto do shader (piso). Enquanto carrega ou
+    // se o WebGL falhar, a imagem linda aparece (nunca preto). Quando monta, dá movimento.
+    // Sem WebGL não tem shader — fica a imagem/gradiente CSS de fallback.
     if (!('WebGLRenderingContext' in window)) {
       console.log('[paper-design] sem-WebGL → mantém gradiente CSS');
       throw new Error('skip-no-webgl');
@@ -3839,9 +3834,10 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
         });
       } else if (tries++ < 120) {
         requestAnimationFrame(waitReady);
-      } else {
-        mount.classList.add('on');                            // desiste após ~2s: revela mesmo assim
+      } else if (!matchMedia('(max-width: 860px)').matches) {
+        mount.classList.add('on');                            // desktop: desiste após ~2s, revela (CSS atrás segura)
       }
+      // MOBILE: se não montou em ~2s, NÃO revela — deixa a FOTO do shader (piso) aparecer, nunca preto
     })();
     // quando fontes/imagens terminarem de carregar, força um redimensionamento (corrige o 1º load)
     addEventListener('load', () => window.dispatchEvent(new Event('resize')), { once: true });
