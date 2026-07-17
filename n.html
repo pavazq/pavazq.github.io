@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1240';
+    var BUILD = 'v-20260717-1250';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -503,13 +503,15 @@
     .hero-photo { display: none; }
     .hero-aurora { display: none; }
     @keyframes grainCrawl {
-      0%   { transform: translate3d(-11%, -7%, 0); }
-      100% { transform: translate3d(11%, 8%, 0); }
+      0%,100% { transform: translate3d(-8%, -6%, 0); }
+      25%     { transform: translate3d(7%, 5%, 0); }
+      50%     { transform: translate3d(-5%, 8%, 0); }
+      75%     { transform: translate3d(8%, -6%, 0); }
     }
-    /* brilho de cor que FLUI (azul + rosa) — movimento bem visível, CSS puro */
+    /* brilho de cor que FLUI (azul + rosa + violeta) — movimento ÓBVIO, CSS puro (aparece na hora) */
     @keyframes auroraDrift {
-      0%   { transform: translate3d(-9%, -6%, 0) scale(1.05); opacity: .6; }
-      100% { transform: translate3d(9%, 7%, 0) scale(1.2);  opacity: 1; }
+      0%, 100% { transform: translate3d(-12%, -8%, 0) scale(1.1)  rotate(-3deg); opacity: .5; }
+      50%      { transform: translate3d(12%, 10%, 0) scale(1.34) rotate(5deg);  opacity: 1; }
     }
 
     /* MOBILE (portrait): FOTO do shader (cor+grânulos, IDÊNTICO ao "antes", SEMPRE carrega)
@@ -519,17 +521,18 @@
       .hero-photo {
         display: block; position: absolute; inset: -55%; z-index: 1; pointer-events: none;
         background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='ng'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23ng)'/></svg>");
-        opacity: .5; mix-blend-mode: overlay;
-        animation: grainCrawl 3.2s ease-in-out infinite alternate !important;
+        opacity: .62; mix-blend-mode: overlay;
+        animation: grainCrawl 1.7s ease-in-out infinite !important;
         will-change: transform;
       }
       .hero-aurora {
-        display: block; position: absolute; inset: -25%; z-index: 1; pointer-events: none;
+        display: block; position: absolute; inset: -30%; z-index: 1; pointer-events: none;
         background:
-          radial-gradient(46% 42% at 80% 28%, rgba(72,84,255,.42), transparent 68%),
-          radial-gradient(44% 42% at 16% 72%, rgba(240,72,150,.36), transparent 68%);
+          radial-gradient(40% 36% at 80% 26%, rgba(72,90,255,.6), transparent 64%),
+          radial-gradient(38% 36% at 16% 74%, rgba(240,72,150,.5), transparent 64%),
+          radial-gradient(32% 30% at 52% 50%, rgba(150,90,255,.4), transparent 68%);
         mix-blend-mode: screen;
-        animation: auroraDrift 7.5s ease-in-out infinite alternate !important;
+        animation: auroraDrift 6s ease-in-out infinite !important;
         will-change: transform, opacity;
       }
       .hero-grain, .hero-grain2 { display: none; }
@@ -3816,8 +3819,13 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Com "reduzir movimento" o gradiente CONTINUA (é o visual da marca) — só fica ESTÁTICO (speed 0).
 
-    // MOBILE: o shader ANIMA por cima da foto do shader (piso). Igual ao desktop.
-    // Se carregar devagar ou falhar, a imagem+brilho aparecem embaixo (nunca preto).
+    // MOBILE: NÃO carrega o shader. Ele baixa da internet (1-2s) e dava o "pulo" feio
+    // (imagem parada → aí o efeito aparece). No mobile o movimento é 100% CSS (aurora +
+    // grânulos): aparece NA HORA, igual todo clique, sem baixar nada, sem pulo.
+    if (matchMedia('(max-width: 860px)').matches) {
+      console.log('[paper-design] mobile → movimento CSS (instantâneo, sem pulo do shader)');
+      throw new Error('skip-mobile');
+    }
     // Sem WebGL não tem shader — fica a imagem/gradiente CSS de fallback.
     if (!('WebGLRenderingContext' in window)) {
       console.log('[paper-design] sem-WebGL → mantém gradiente CSS');
@@ -3898,7 +3906,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
 </script>
 
 <!-- SELO DE VERSÃO (temporário, pra diagnosticar cache) — mostra na tela qual versão carregou -->
-<div id="ver-selo" style="position:fixed;left:8px;bottom:8px;z-index:2147483647;font:700 12px system-ui,-apple-system,sans-serif;color:#fff;background:#E8447A;padding:5px 10px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,.4);pointer-events:none">v1240 · shader+galeria</div>
+<div id="ver-selo" style="position:fixed;left:8px;bottom:8px;z-index:2147483647;font:700 12px system-ui,-apple-system,sans-serif;color:#fff;background:#E8447A;padding:5px 10px;border-radius:20px;box-shadow:0 4px 12px rgba(0,0,0,.4);pointer-events:none">v1250 · mexe na hora</div>
 
 </body>
 </html>
