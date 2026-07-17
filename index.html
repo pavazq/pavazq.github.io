@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1142';
+    var BUILD = 'v-20260717-1150';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -502,8 +502,8 @@
        Escondida no desktop; no mobile fica sobre a foto (e sob o shader, que anima quando roda). */
     .hero-photo { display: none; }
     @keyframes grainCrawl {
-      0%   { transform: translate3d(-7%, -5%, 0); }
-      100% { transform: translate3d(7%, 6%, 0); }
+      0%   { transform: translate3d(-11%, -7%, 0); }
+      100% { transform: translate3d(11%, 8%, 0); }
     }
 
     /* MOBILE (portrait): FOTO do shader (cor+grânulos, IDÊNTICO ao "antes", SEMPRE carrega)
@@ -514,7 +514,7 @@
         display: block; position: absolute; inset: -55%; z-index: 1; pointer-events: none;
         background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='ng'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23ng)'/></svg>");
         opacity: .5; mix-blend-mode: overlay;
-        animation: grainCrawl 5s ease-in-out infinite alternate;
+        animation: grainCrawl 3.2s ease-in-out infinite alternate;
         will-change: transform;
       }
       .hero-grain, .hero-grain2 { display: none; }
