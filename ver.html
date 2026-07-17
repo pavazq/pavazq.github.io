@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1530';
+    var BUILD = 'v-20260717-1540';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -567,7 +567,7 @@
     .hero-title {
       font-family: 'Bricolage Grotesque', system-ui, sans-serif;
       font-weight: 800;
-      font-size: clamp(32px, 5vw, 72px);
+      font-size: clamp(46px, 5.8vw, 84px);
       line-height: 1; letter-spacing: -.04em;
       color: #FAFAFA;
       margin-top: 0;
@@ -576,8 +576,8 @@
       transition: color .8s ease, text-shadow .8s ease;
     }
     .hero-sub {
-      font-size: clamp(15px, 1.5vw, 19px); line-height: 1.6;
-      color: rgba(255,255,255,.74); max-width: 520px;
+      font-size: clamp(18px, 1.7vw, 23px); line-height: 1.55;
+      color: rgba(255,255,255,.8); max-width: 640px;
       margin-top: clamp(18px, 2.6vh, 28px);
       transition: color .8s ease;
     }
@@ -1419,7 +1419,7 @@
 
   <div class="hero-lead">
     <h1 class="hero-title">Sites e sistemas<br/>pra sua marca<br/><em style="position:relative; display:inline-block">florescer<svg class="doodle dood-draw" viewBox="0 0 320 150" preserveAspectRatio="none" style="left:-15%; top:-30%; width:130%; height:168%; z-index:-1"><path pathLength="100" d="M60,74 C44,32 128,18 190,21 C266,24 306,46 296,78 C287,106 210,124 132,118 C56,112 18,92 42,58 C52,44 70,37 92,36" stroke="#E8447A" stroke-width="3.4"/></svg></em>. <span class="y2k-spark" style="font-size:.5em;vertical-align:middle">✦</span></h1>
-    <p class="hero-sub">O seu negócio já tem valor. Eu só mostro isso pro mundo: um site que apresenta a sua marca e um sistema que organiza a sua rotina. <span class="is-mark mark-yellow" style="color:#191512">Sob medida, do rascunho ao ar.</span></p>
+    <p class="hero-sub">O seu negócio já tem valor. Eu só mostro isso pro mundo.</p>
   </div>
   <div class="hero-fade" aria-hidden="true"></div>
 </section>
