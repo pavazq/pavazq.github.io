@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1610';
+    var BUILD = 'v-20260717-1700';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -520,21 +520,21 @@
        O poster (1º frame) segura enquanto o vídeo inicia → sem preto, sem pulo. As camadas
        de blend (aurora/grão) ficam OFF: não animam no Safari do iPhone e o vídeo é o efeito. */
     @media (max-width: 860px) {
+      /* fundo de fallback = poster do tema (aparece se o vídeo não tocar/carregar) */
       .hero { background: #0B0A0A url('img/hero-mobile.jpg') center center / cover no-repeat !important; }
       .hero-video {
-        display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+        position: absolute; inset: 0; z-index: 0; pointer-events: none;
         width: 100%; height: 100%; object-fit: cover; object-position: center center;
       }
+      .hv-dark  { display: block; }
+      .hv-light { display: none; }
       .hero-aurora, .hero-photo, .hero-grain, .hero-grain2 { display: none !important; }
-      [data-theme="light"] .hero-video { display: none !important; }
+      /* TEMA CLARO: usa o vídeo claro (fundo creme + grânulos), esconde o escuro */
       [data-theme="light"] .hero {
-        background: #F2E9D9 !important;
-        background-image:
-          radial-gradient(ellipse 72% 128% at 122% 30%, hsla(232,90%,60%,.55) 0%, hsla(244,86%,56%,.3) 26%, transparent 64%),
-          radial-gradient(ellipse 58% 95% at -20% 74%, hsla(322,82%,58%,.42) 0%, transparent 58%),
-          radial-gradient(ellipse 62% 52% at -8% 112%, hsla(342,80%,58%,.32) 0%, transparent 55%),
-          radial-gradient(ellipse 96% 42% at 82% -10%, hsla(256,78%,60%,.26) 0%, transparent 60%) !important;
+        background: #F7F3EA url('img/hero-mobile-light.jpg') center center / cover no-repeat !important;
       }
+      [data-theme="light"] .hv-dark  { display: none; }
+      [data-theme="light"] .hv-light { display: block; }
     }
 
     /* CAMADA SHADER REAL — paper-design GrainGradient (canvas WebGL), por cima do CSS */
@@ -1411,9 +1411,13 @@
   <div class="hero-aurora" aria-hidden="true"></div>
   <div class="hero-photo" aria-hidden="true"></div>
   <!-- MOBILE: vídeo do próprio shader (toca na hora via streaming) — mexe já na 1ª entrada -->
-  <video class="hero-video" autoplay muted loop playsinline webkit-playsinline preload="auto"
+  <video class="hero-video hv-dark" autoplay muted loop playsinline webkit-playsinline preload="auto"
          poster="img/hero-mobile.jpg" aria-hidden="true">
     <source src="img/hero-loop.mp4" type="video/mp4">
+  </video>
+  <video class="hero-video hv-light" muted loop playsinline webkit-playsinline preload="none"
+         poster="img/hero-mobile-light.jpg" aria-hidden="true">
+    <source src="img/hero-loop-light.mp4" type="video/mp4">
   </video>
   <div id="hero-shader-mount" aria-hidden="true"></div>
 
@@ -3895,24 +3899,25 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
 <!-- garante o autoplay do vídeo do hero no mobile (webviews/iOS às vezes seguram) -->
 <script>
 (function(){
-  var v = document.querySelector('.hero-video');
-  if (!v) return;
-  // iOS/webviews: o muted precisa estar setado VIA PROPRIEDADE antes do play (gotcha clássico)
-  v.muted = true; v.defaultMuted = true;
-  function go(){ if (!v.paused) return; var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+  var vids = Array.prototype.slice.call(document.querySelectorAll('.hero-video'));
+  if (!vids.length) return;
+  vids.forEach(function(v){ v.muted = true; v.defaultMuted = true; });
+  // toca só o vídeo VISÍVEL (o do tema atual); no claro isso também dispara o download (preload=none)
+  function go(){
+    vids.forEach(function(v){
+      if (v.offsetParent !== null && v.paused) {           // visível (display != none)
+        var p = v.play(); if (p && p.catch) p.catch(function(){});
+      }
+    });
+  }
   go();
-  // tenta quando os dados chegam
-  v.addEventListener('loadeddata', go);
-  v.addEventListener('canplay', go);
+  vids.forEach(function(v){ v.addEventListener('loadeddata', go); v.addEventListener('canplay', go); });
   addEventListener('load', go, { once: true });
-  // retries: a cada 700ms por ~6s (cobre buffer lento / autoplay que destrava tarde)
   var tries = 0;
-  var t = setInterval(function(){
-    if (!v.paused || ++tries > 9) { clearInterval(t); return; }
-    go();
-  }, 700);
-  // voltar pra aba / primeiro toque ou rolagem também destravam
+  var t = setInterval(function(){ if (++tries > 9) { clearInterval(t); return; } go(); }, 700);
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) go(); });
+  // troca de tema → toca o vídeo que passou a aparecer
+  new MutationObserver(go).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
   ['touchstart','click','scroll'].forEach(function(ev){
     addEventListener(ev, function h(){ go(); }, { once: true, passive: true });
   });
