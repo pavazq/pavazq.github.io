@@ -1736,6 +1736,17 @@
     .pz-mundo { position:relative; height:70vh; transform:none !important; }
     .pz-front, .pz-glow { display:none; }
   }
+  /* MOBILE: galeria vira vitrine ESTÁTICA (NÃO a seção gigante sticky de 440vh que
+     congelava o scroll). Pausa TODAS as animações contínuas e remove will-change
+     (que criava camadas demais). Isso conserta o "travada quando rola". */
+  @media (max-width: 860px) {
+    .pz-pista { height:auto !important; }
+    .pz-stage { position:relative !important; height:auto !important; min-height:62vh; }
+    .pz-mundo { position:relative !important; height:62vh; transform:none !important; }
+    .pz-front, .pz-glow, .pz-petal { display:none !important; }
+    .pz-qin, .pz-placa-in, .pz-leaf { animation:none !important; }
+    .pz-mundo, .pz-quadro, .pz-placa, .pz-front, .pz-leaf { will-change:auto !important; }
+  }
 </style>
 <section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
   <div class="pz-stage" id="pz-stage">
