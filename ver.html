@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1310';
+    var BUILD = 'v-20260717-1400';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -502,6 +502,7 @@
        Escondida no desktop; no mobile fica sobre a foto (e sob o shader, que anima quando roda). */
     .hero-photo { display: none; }
     .hero-aurora { display: none; }
+    .hero-video { display: none; }
     @keyframes grainCrawl {
       0%,100% { transform: translate3d(-8%, -6%, 0); }
       25%     { transform: translate3d(7%, 5%, 0); }
@@ -514,30 +515,18 @@
       50%      { transform: translate3d(12%, 10%, 0) scale(1.34) rotate(5deg);  opacity: 1; }
     }
 
-    /* MOBILE (portrait): FOTO do shader (cor+grânulos, IDÊNTICO ao "antes", SEMPRE carrega)
-       + grânulos que SE MEXEM por cima (movimento garantido) + shader real por cima quando roda. */
+    /* MOBILE (portrait): o hero é um VÍDEO do próprio shader — toca via streaming, então
+       MEXE já na 1ª entrada (não espera baixar tudo como o shader JS). É o flow do desktop.
+       O poster (1º frame) segura enquanto o vídeo inicia → sem preto, sem pulo. As camadas
+       de blend (aurora/grão) ficam OFF: não animam no Safari do iPhone e o vídeo é o efeito. */
     @media (max-width: 860px) {
       .hero { background: #0B0A0A url('img/hero-mobile.jpg') center center / cover no-repeat !important; }
-      .hero-photo {
-        display: block; position: absolute; inset: -55%; z-index: 1; pointer-events: none;
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='ng'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23ng)'/></svg>");
-        opacity: .62; mix-blend-mode: overlay;
-        animation: grainCrawl 1.7s ease-in-out infinite !important;
-        will-change: transform;
+      .hero-video {
+        display: block; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+        width: 100%; height: 100%; object-fit: cover; object-position: center center;
       }
-      .hero-aurora {
-        display: block; position: absolute; inset: -30%; z-index: 1; pointer-events: none;
-        background:
-          radial-gradient(40% 36% at 80% 26%, rgba(72,90,255,.6), transparent 64%),
-          radial-gradient(38% 36% at 16% 74%, rgba(240,72,150,.5), transparent 64%),
-          radial-gradient(32% 30% at 52% 50%, rgba(150,90,255,.4), transparent 68%);
-        mix-blend-mode: screen;
-        animation: auroraDrift 6s ease-in-out infinite !important;
-        will-change: transform, opacity;
-      }
-      .hero-grain, .hero-grain2 { display: none; }
-      [data-theme="light"] .hero-aurora { display: none; }
-      /* movimento é a assinatura da marca: mantém mesmo com "Reduzir Movimento" (é suave) */
+      .hero-aurora, .hero-photo, .hero-grain, .hero-grain2 { display: none !important; }
+      [data-theme="light"] .hero-video { display: none !important; }
       [data-theme="light"] .hero {
         background: #F2E9D9 !important;
         background-image:
@@ -546,8 +535,6 @@
           radial-gradient(ellipse 62% 52% at -8% 112%, hsla(342,80%,58%,.32) 0%, transparent 55%),
           radial-gradient(ellipse 96% 42% at 82% -10%, hsla(256,78%,60%,.26) 0%, transparent 60%) !important;
       }
-      [data-theme="light"] .hero-photo { display: none; }
-      /* grão continua se mexendo mesmo com "Reduzir Movimento" ligado */
     }
 
     /* CAMADA SHADER REAL — paper-design GrainGradient (canvas WebGL), por cima do CSS */
@@ -572,7 +559,7 @@
     }
 
     /* todo conteúdo do hero acima do gradient, grain e shader */
-    .hero > *:not(.hero-fade):not(.hero-grain):not(#hero-shader-mount) {
+    .hero > *:not(.hero-fade):not(.hero-grain):not(.hero-video):not(#hero-shader-mount) {
       position: relative; z-index: 5;
     }
 
@@ -1427,6 +1414,11 @@
   <div class="hero-grain2" aria-hidden="true"></div>
   <div class="hero-aurora" aria-hidden="true"></div>
   <div class="hero-photo" aria-hidden="true"></div>
+  <!-- MOBILE: vídeo do próprio shader (toca na hora via streaming) — mexe já na 1ª entrada -->
+  <video class="hero-video" autoplay muted loop playsinline preload="auto"
+         poster="img/hero-mobile.jpg" aria-hidden="true">
+    <source src="img/hero-loop.mp4" type="video/mp4">
+  </video>
   <div id="hero-shader-mount" aria-hidden="true"></div>
 
   <div class="hero-lead">
@@ -3819,9 +3811,12 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     // Com "reduzir movimento" o gradiente CONTINUA (é o visual da marca) — só fica ESTÁTICO (speed 0).
 
-    // MOBILE: o shader (WebGL) ANIMA por cima da FOTO do shader (piso idêntico). No iPhone
-    // o WebGL anima de verdade (não sofre do bug de mix-blend do Safari). Enquanto ele
-    // carrega, aparece a foto igualzinha → quando entra, é só "começar a mexer", sem pulo.
+    // MOBILE: NÃO carrega o shader JS. No celular o efeito é o VÍDEO do shader (mexe na 1ª
+    // entrada, sem baixar React/shader). No desktop o shader ao vivo continua.
+    if (matchMedia('(max-width: 860px)').matches) {
+      console.log('[paper-design] mobile → vídeo do shader (mexe na 1ª entrada)');
+      throw new Error('skip-mobile');
+    }
     // Sem WebGL não tem shader — fica a imagem/gradiente CSS de fallback.
     if (!('WebGLRenderingContext' in window)) {
       console.log('[paper-design] sem-WebGL → mantém gradiente CSS');
@@ -3899,6 +3894,21 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   } catch (err) {
     console.warn('[paper-design] failed → fallback CSS visible:', err.message);
   }
+</script>
+
+<!-- garante o autoplay do vídeo do hero no mobile (alguns webviews seguram o autoplay) -->
+<script>
+(function(){
+  var v = document.querySelector('.hero-video');
+  if (!v) return;
+  function go(){ var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+  go();
+  addEventListener('load', go, { once: true });
+  // fallback: no primeiro toque/scroll, tenta de novo (destrava autoplay preso)
+  ['touchstart','click','scroll'].forEach(function(ev){
+    addEventListener(ev, function h(){ go(); }, { once: true, passive: true });
+  });
+})();
 </script>
 
 </body>
