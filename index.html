@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1150';
+    var BUILD = 'v-20260717-1205';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -501,9 +501,15 @@
        em qualquer navegador, mesmo onde o shader WebGL não roda (ex: navegador do WhatsApp).
        Escondida no desktop; no mobile fica sobre a foto (e sob o shader, que anima quando roda). */
     .hero-photo { display: none; }
+    .hero-aurora { display: none; }
     @keyframes grainCrawl {
       0%   { transform: translate3d(-11%, -7%, 0); }
       100% { transform: translate3d(11%, 8%, 0); }
+    }
+    /* brilho de cor que FLUI (azul + rosa) — movimento bem visível, CSS puro */
+    @keyframes auroraDrift {
+      0%   { transform: translate3d(-9%, -6%, 0) scale(1.05); opacity: .6; }
+      100% { transform: translate3d(9%, 7%, 0) scale(1.2);  opacity: 1; }
     }
 
     /* MOBILE (portrait): FOTO do shader (cor+grânulos, IDÊNTICO ao "antes", SEMPRE carrega)
@@ -517,7 +523,18 @@
         animation: grainCrawl 3.2s ease-in-out infinite alternate;
         will-change: transform;
       }
+      .hero-aurora {
+        display: block; position: absolute; inset: -25%; z-index: 1; pointer-events: none;
+        background:
+          radial-gradient(46% 42% at 80% 28%, rgba(72,84,255,.42), transparent 68%),
+          radial-gradient(44% 42% at 16% 72%, rgba(240,72,150,.36), transparent 68%);
+        mix-blend-mode: screen;
+        animation: auroraDrift 7.5s ease-in-out infinite alternate;
+        will-change: transform, opacity;
+      }
       .hero-grain, .hero-grain2 { display: none; }
+      [data-theme="light"] .hero-aurora { display: none; }
+      @media (prefers-reduced-motion: reduce) { .hero-aurora { animation: none; } }
       [data-theme="light"] .hero {
         background: #F2E9D9 !important;
         background-image:
@@ -1405,6 +1422,7 @@
 <section class="hero" id="home">
   <div class="hero-grain" aria-hidden="true"></div>
   <div class="hero-grain2" aria-hidden="true"></div>
+  <div class="hero-aurora" aria-hidden="true"></div>
   <div class="hero-photo" aria-hidden="true"></div>
   <div id="hero-shader-mount" aria-hidden="true"></div>
 
@@ -1753,17 +1771,20 @@
     .pz-mundo { position:relative; height:70vh; transform:none !important; }
     .pz-front, .pz-glow { display:none; }
   }
-  /* MOBILE: galeria vira vitrine ESTÁTICA (NÃO a seção gigante sticky de 440vh que
-     congelava o scroll). Pausa TODAS as animações contínuas e remove will-change
-     (que criava camadas demais). Isso conserta o "travada quando rola". */
+  /* MOBILE: galeria NÃO é mais a seção gigante sticky de 440vh (que congelava). Vira uma
+     vitrine que DESLIZA sozinha de leve (animação CSS = transform GPU, leve, não trava).
+     Sub-animações pesadas (sway/petal) e will-change extra continuam desligados. */
   @media (max-width: 860px) {
     .pz-pista { height:auto !important; }
-    .pz-stage { position:relative !important; height:auto !important; min-height:62vh; }
-    .pz-mundo { position:relative !important; height:62vh; transform:none !important; }
+    .pz-stage { position:relative !important; height:auto !important; min-height:62vh; overflow:hidden; }
+    .pz-mundo { position:relative !important; height:62vh; will-change:transform;
+      animation: pzPan 30s ease-in-out infinite alternate; }
     .pz-front, .pz-glow, .pz-petal { display:none !important; }
     .pz-qin, .pz-placa-in, .pz-leaf { animation:none !important; }
-    .pz-mundo, .pz-quadro, .pz-placa, .pz-front, .pz-leaf { will-change:auto !important; }
+    .pz-quadro, .pz-placa, .pz-front, .pz-leaf { will-change:auto !important; }
+    @media (prefers-reduced-motion: reduce) { .pz-mundo { animation:none; transform:none !important; } }
   }
+  @keyframes pzPan { from { transform: translate3d(0,0,0); } to { transform: translate3d(-58%,0,0); } }
 </style>
 <section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
   <div class="pz-stage" id="pz-stage">
