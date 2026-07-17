@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1540';
+    var BUILD = 'v-20260717-1550';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -1419,7 +1419,7 @@
 
   <div class="hero-lead">
     <h1 class="hero-title">Sites e sistemas<br/>pra sua marca<br/><em style="position:relative; display:inline-block">florescer<svg class="doodle dood-draw" viewBox="0 0 320 150" preserveAspectRatio="none" style="left:-15%; top:-30%; width:130%; height:168%; z-index:-1"><path pathLength="100" d="M60,74 C44,32 128,18 190,21 C266,24 306,46 296,78 C287,106 210,124 132,118 C56,112 18,92 42,58 C52,44 70,37 92,36" stroke="#E8447A" stroke-width="3.4"/></svg></em>. <span class="y2k-spark" style="font-size:.5em;vertical-align:middle">✦</span></h1>
-    <p class="hero-sub">O seu negócio já tem valor. Eu só mostro isso pro mundo.</p>
+    <p class="hero-sub">O seu negócio já tem valor.<br/>Eu só mostro isso pro mundo.</p>
   </div>
   <div class="hero-fade" aria-hidden="true"></div>
 </section>
