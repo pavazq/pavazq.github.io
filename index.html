@@ -7,6 +7,23 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
+  <!-- AUTO-ATUALIZAÇÃO: se o navegador (ex: WhatsApp) serviu uma versão velha do cache,
+       o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
+  <script>
+  (function(){
+    var BUILD = 'v-20260717-1142';
+    try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
+    fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.text() : ''; })
+      .then(function(t){
+        t = (t || '').trim();
+        if (t && t !== BUILD) {
+          try { sessionStorage.setItem('pv-rl','1'); } catch(e){}
+          location.replace(location.pathname + '?fresh=' + Date.now());
+        }
+      }).catch(function(){});
+  })();
+  </script>
   <title>Paloma Vazquez · Sites e sistemas sob medida</title>
   <meta name="description" content="Sites e sistemas personalizados que ajudam seu negócio a crescer, com design que impressiona e funciona."/>
   <link rel="icon" type="image/png" href="img/favicon.png"/>
