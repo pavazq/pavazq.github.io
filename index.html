@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1810';
+    var BUILD = 'v-20260717-1930';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -1447,78 +1447,17 @@
       <a href="#ctt" class="is-btn ghost">Falar comigo →</a>
     </div>
   </div>
-  <!-- CENA: terminal pendurado balançando + liliputianos consertando (desktop) -->
-  <div class="lil-scene" aria-hidden="true">
-    <span class="lil-wire"></span>
-    <div class="lil-hang">
-      <div class="mac-win win-term stmt-term">
-        <div class="win-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="win-title">paloma@hera ~ %</span></div>
-        <div class="win-body">
-          <span class="t-dim">$</span> <span class="t-blue">npm</span> run deploy<br/>
-          <span class="t-green">✓</span> build compilado <span class="t-dim">em 1.2s</span><br/>
-          <span class="t-green">✓</span> tudo no ar <span class="t-pink">✦</span><br/>
-          <span class="t-dim">$</span> <span class="t-cur"></span>
-        </div>
-      </div>
+  <div class="mac-win win-term stmt-term" style="position:absolute; right:clamp(24px,5vw,56px); top:clamp(70px,14vh,150px); width:340px; z-index:2">
+    <div class="win-bar"><span class="win-dots"><span></span><span></span><span></span></span><span class="win-title">paloma@hera ~ %</span></div>
+    <div class="win-body">
+      <span class="t-dim">$</span> <span class="t-blue">npm</span> run deploy<br/>
+      <span class="t-green">✓</span> build compilado <span class="t-dim">em 1.2s</span><br/>
+      <span class="t-green">✓</span> tudo no ar <span class="t-pink">✦</span><br/>
+      <span class="t-dim">$</span> <span class="t-cur"></span>
     </div>
-    <div class="lilc-wrap lilc-run1"></div>
-    <div class="lilc-wrap lilc-jump"></div>
-    <div class="lilc-wrap lilc-run2"></div>
   </div>
-  <template id="lilc-tpl"><svg class="lilc lc" viewBox="0 0 70 100" fill="none" aria-hidden="true">
-    <g class="lc-body">
-      <g class="lc-legb"><rect x="30" y="60" width="11" height="30" rx="5.5" fill="#C0356A"/><path d="M27 87 h16 a4 4 0 0 1 4 4 a3 3 0 0 1-3 3 h-20 a3 3 0 0 1-3-4 z" fill="#6E4220"/></g>
-      <g class="lc-armb"><rect x="31.5" y="37" width="8" height="22" rx="4" fill="#C0356A"/><circle cx="35.5" cy="59" r="4.4" fill="#E7BE9C"/></g>
-      <g class="lc-legf"><rect x="30" y="60" width="11" height="30" rx="5.5" fill="#E8447A"/><path d="M27 87 h16 a4 4 0 0 1 4 4 a3 3 0 0 1-3 3 h-20 a3 3 0 0 1-3-4 z" fill="#8B5A2B"/></g>
-      <rect x="22.5" y="33" width="25" height="30" rx="11" fill="#E8447A"/>
-      <rect x="27" y="34" width="3.6" height="17" rx="1.8" fill="#4B57FF"/><rect x="39.4" y="34" width="3.6" height="17" rx="1.8" fill="#4B57FF"/>
-      <circle cx="35" cy="21" r="14.5" fill="#F3CBA9"/>
-      <circle cx="41.6" cy="20" r="1.8" fill="#2A2233"/>
-      <path d="M39 27 q3.2 2.6 6.2 0" stroke="#2A2233" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-      <path class="lc-cap" d="M20.5 18.5 a14.5 14.5 0 0 1 29 0 q0 3 -3 3 h-23 q-3 0 -3 -3 z" fill="#4B57FF"/>
-      <rect class="lc-knob" x="30.5" y="5" width="9" height="5" rx="2.5" fill="#3742C9"/>
-      <g class="lc-armf"><rect x="31.5" y="37" width="8" height="22" rx="4" fill="#E8447A"/><circle cx="35.5" cy="59" r="4.6" fill="#F3CBA9"/></g>
-    </g>
-  </svg></template>
-  <script>(function(){var t=document.getElementById('lilc-tpl');if(t)document.querySelectorAll('.lilc-wrap').forEach(function(w){w.appendChild(t.content.cloneNode(true));});})();</script>
 </section>
-<style>
-  .lil-scene { position:absolute; right:clamp(16px,4vw,48px); top:clamp(36px,9vh,88px);
-    width:min(400px,40vw); height:320px; z-index:3; pointer-events:none; }
-  .lil-wire { position:absolute; top:0; left:48%; width:2px; height:48px;
-    background:linear-gradient(to bottom, transparent, rgba(30,22,40,.5)); }
-  .lil-hang { position:absolute; top:44px; left:0; right:0; transform-origin:48% 0;
-    animation:lilSwing 3.4s ease-in-out infinite; }
-  .lil-hang .stmt-term { position:static; width:100%; }
-  @keyframes lilSwing { 0%,100%{ transform:rotate(-2.4deg); } 50%{ transform:rotate(2.4deg); } }
-  /* personagenzinho SVG riggado (corrida articulada) */
-  .lilc { width:52px; height:auto; overflow:visible; display:block; }
-  .lc [class^="lc-le"], .lc [class^="lc-ar"] { transform-box:fill-box; }
-  .lc-legf, .lc-legb { transform-origin:50% 3%; }
-  .lc-armf, .lc-armb { transform-origin:50% 8%; }
-  .lc-body { animation:lcBob .46s ease-in-out infinite; }
-  .lc-legf { animation:lcLegF .46s ease-in-out infinite; }
-  .lc-legb { animation:lcLegB .46s ease-in-out infinite; }
-  .lc-armf { animation:lcArmF .46s ease-in-out infinite; }
-  .lc-armb { animation:lcArmB .46s ease-in-out infinite; }
-  @keyframes lcLegF { 0%{transform:rotate(36deg)} 50%{transform:rotate(-32deg)} 100%{transform:rotate(36deg)} }
-  @keyframes lcLegB { 0%{transform:rotate(-32deg)} 50%{transform:rotate(36deg)} 100%{transform:rotate(-32deg)} }
-  @keyframes lcArmF { 0%{transform:rotate(-42deg)} 50%{transform:rotate(38deg)} 100%{transform:rotate(-42deg)} }
-  @keyframes lcArmB { 0%{transform:rotate(38deg)} 50%{transform:rotate(-42deg)} 100%{transform:rotate(38deg)} }
-  @keyframes lcBob { 0%,100%{transform:translateY(0)} 25%{transform:translateY(-2.5px)} 50%{transform:translateY(0)} 75%{transform:translateY(-2.5px)} }
-  /* wrappers: um corre L→R, um pula no lugar, um volta R→L espelhado */
-  .lilc-wrap { position:absolute; bottom:0; will-change:transform; }
-  .lilc-run1 { animation:lilRunAcross 5.4s linear infinite; }
-  .lilc-run2 { animation:lilRunBack 6.6s linear infinite; }
-  .lilc-jump { left:180px; animation:lilJump 1.05s cubic-bezier(.3,0,.4,1) infinite; }
-  .lilc-jump .lc-cap { fill:#E8447A; } .lilc-jump .lc-knob { fill:#C0356A; }
-  .lilc-run2 .lc-cap { fill:#7EA0FF; } .lilc-run2 .lc-knob { fill:#4B57FF; }
-  @keyframes lilRunAcross { from{ transform:translateX(-56px);} to{ transform:translateX(430px);} }
-  @keyframes lilRunBack   { from{ transform:translateX(430px) scaleX(-1);} to{ transform:translateX(-56px) scaleX(-1);} }
-  @keyframes lilJump { 0%,100%{ transform:translateY(0);} 42%{ transform:translateY(-30px);} }
-  @media (prefers-reduced-motion: reduce){ .lil-hang,.lilc-wrap,.lc-body,.lc-legf,.lc-legb,.lc-armf,.lc-armb{ animation:none !important; } }
-  @media (max-width: 980px){ .lil-scene { display:none; } }
-</style>
+<style>@media (max-width: 980px){ .stmt-term { display: none; } }</style>
 
 <!-- SERVIÇOS — o que eu faço (substituiu o carrossel 3D) -->
 <style>
