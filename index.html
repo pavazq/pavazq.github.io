@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260717-1930';
+    var BUILD = 'v-20260719-1403';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -111,7 +111,9 @@
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; overflow-x: clip; max-width: 100%; background: var(--white); transition: background-color .8s ease; }
+    html { overflow-x: clip; max-width: 100%; background: var(--white); transition: background-color .8s ease; }
+    /* rolagem suave só no desktop; no celular usa o scroll NATIVO (o smooth briga com o momentum do iOS e deixa a rolagem "engasgada") */
+    @media (min-width: 861px) { html { scroll-behavior: smooth; } }
     body {
       background: var(--white);
       color: var(--ink);
@@ -3351,7 +3353,16 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   function onLeave() { mouse.x = -9999; mouse.y = -9999; }
 
   resize();
-  window.addEventListener('resize', resize);
+  // No iOS a barra do Safari aparece/some DURANTE a rolagem e dispara 'resize' a cada nudge.
+  // Reconstruir ~2 mil bolinhas toda vez engasga a rolagem. Só refaz quando a LARGURA muda
+  // (a barra mexe só na altura), e com debounce.
+  let __curW = window.innerWidth, __curT;
+  window.addEventListener('resize', function(){
+    if (window.innerWidth === __curW) return;
+    __curW = window.innerWidth;
+    clearTimeout(__curT);
+    __curT = setTimeout(resize, 160);
+  });
   canvas.addEventListener('mousemove', onMove);
   // toque leve: registra já no touchstart e continua espalhando um instante
   // depois do dedo soltar (senão um tap rápido não move nada)
@@ -3727,7 +3738,14 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   function start() { if (running) return; running = true; resize(); canvas.classList.add('on'); if (softBg) softBg.style.opacity = 0; drawWaves(); }
   function stop()  { running = false; if (rafId) cancelAnimationFrame(rafId); }
   new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold: 0.05 }).observe(sec);
-  window.addEventListener('resize', () => { if (running) resize(); });
+  // mesma guarda: ignora o vai-e-vem da barra do Safari (só altura); refaz só se a largura mudar
+  let __wvW = window.innerWidth, __wvT;
+  window.addEventListener('resize', function(){
+    if (window.innerWidth === __wvW) return;
+    __wvW = window.innerWidth;
+    clearTimeout(__wvT);
+    __wvT = setTimeout(function(){ if (running) resize(); }, 160);
+  });
 })();
 
 // ═══════════ Popup de projetos por serviço ═══════════
