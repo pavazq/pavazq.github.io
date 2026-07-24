@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260719-1403';
+    var BUILD = 'v-20260724-1031';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -1686,256 +1686,6 @@
   </div>
 </div>
 
-<!-- ══ O PASSEIO DA HERA · você (cabeça real + pés desenhados) passeia pela galeria dos sonhos (corredor desliza) ══ -->
-<style>
-  .pz-pista { position: relative; height: 440vh; }
-  .pz-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; background:#0B0A0A; }
-  [data-theme="light"] .pz-stage { background: var(--white); }
-  /* o MUNDO (corredor + quadros flutuantes) desliza — você desce a galeria */
-  .pz-mundo { position:absolute; top:0; left:0; height:100%; aspect-ratio: 2172/724; z-index:1; will-change:transform; }
-  .pz-pano { position:absolute; inset:0; width:100%; height:100%; display:block; }
-  /* ── QUADROS FLUTUANTES (soltos, na frente do corredor) ── */
-  .pz-quadro { position:absolute; left:var(--qx); top:var(--qy); width:var(--qw); z-index:2;
-    transform: translate3d(calc(var(--px,0)*1px), calc(var(--py,0)*1px), 0) rotate(var(--rot,0deg)); will-change:transform; }
-  .pz-qin { animation: pz-sway var(--swd,6.5s) ease-in-out infinite alternate; transform-origin:top center; }
-  @keyframes pz-sway { from { transform: rotate(-1.1deg) translateY(0); } to { transform: rotate(1.3deg) translateY(7px); } }
-  .pz-moldura { background:#FBF6EC; padding:5.5% 5.5% 4.5%; border:3px solid #C9A253;
-    box-shadow: inset 0 0 0 2px #E7CE93, 0 30px 50px -18px rgba(15,8,4,.55), 0 10px 18px -8px rgba(15,8,4,.4); }
-  .pz-moldura img { display:block; width:100%; height:auto; }
-  .pz-etq { margin-top:9px; display:flex; justify-content:center; }
-  .pz-etq span { display:inline-block; background:linear-gradient(180deg,#EFD9A5,#C9A253); color:#4A3512;
-    font-family:'Inter',sans-serif; font-size:clamp(8px,.62vw,12px); font-weight:600; letter-spacing:.04em;
-    padding:4px 12px; border-radius:3px; box-shadow:0 6px 12px -6px rgba(15,8,4,.5); white-space:nowrap; }
-  /* placa de museu (a piada) */
-  .pz-placa { position:absolute; left:var(--qx); top:var(--qy); z-index:2; width:var(--qw);
-    transform: translate3d(calc(var(--px,0)*1px), calc(var(--py,0)*1px), 0) rotate(var(--rot,0deg)); will-change:transform; }
-  .pz-placa-in { background:#F6EFE2; border:2px solid #C9A253; border-radius:6px; padding:clamp(8px,1vw,18px) clamp(10px,1.2vw,22px);
-    box-shadow: inset 0 0 0 2px #E7CE93, 0 24px 44px -16px rgba(15,8,4,.55); text-align:center;
-    animation: pz-sway var(--swd,7.5s) ease-in-out infinite alternate; transform-origin:top center; }
-  .pz-placa-in b { display:block; font-family:'Inter',sans-serif; font-size:clamp(10px,.85vw,16px); font-weight:700;
-    color:#3E2E10; letter-spacing:.05em; text-transform:uppercase; }
-  .pz-placa-in i { display:block; margin-top:4px; font-family:'Caveat',cursive; font-style:normal;
-    font-size:clamp(13px,1.15vw,22px); color:var(--rose); }
-  /* folhagem viva em primeiro plano (desliza mais rápido = profundidade) */
-  .pz-front { position:absolute; top:0; left:0; height:100%; aspect-ratio: 2172/724; z-index:3; pointer-events:none; will-change:transform; }
-  /* leve: sem blur nem drop-shadow (só o balanço, que é transform GPU-barato) */
-  .pz-leaf { position:absolute; bottom:-5vh; width:auto; opacity:.6;
-    transform-origin:bottom center; animation: pz-leafsway var(--lsd,5.5s) ease-in-out infinite alternate; }
-  @keyframes pz-leafsway { from { transform: rotate(-2.2deg); } to { transform: rotate(2.4deg); } }
-  /* brilho suave que segue o mouse (sem mix-blend, mais leve) */
-  .pz-glow { position:absolute; inset:0; z-index:4; pointer-events:none; opacity:.4;
-    background: radial-gradient(360px 360px at var(--gx,50%) var(--gy,42%), rgba(255,235,190,.55), transparent 68%); }
-  /* pétalas voando ao vento */
-  .pz-petal { position:absolute; top:-6vh; width:15px; height:19px; z-index:4; pointer-events:none;
-    border-radius:62% 62% 60% 60% / 74% 74% 40% 40%;
-    background:radial-gradient(circle at 38% 28%, #FCD3E4, #E8447A); opacity:0;
-    filter:drop-shadow(0 2px 5px rgba(232,68,122,.28)); will-change:transform; animation:pz-petal linear infinite; }
-  @keyframes pz-petal {
-    0%   { opacity:0; transform:translateY(-6vh) translateX(0) rotate(0deg) scale(.9); }
-    8%   { opacity:.9; }
-    92%  { opacity:.85; }
-    100% { opacity:0; transform:translateY(112vh) translateX(var(--drift,80px)) rotate(560deg) scale(1.05); }
-  }
-  @media (prefers-reduced-motion: reduce){
-    .pz-petal { display:none; }
-    .pz-qin, .pz-placa-in, .pz-leaf { animation:none; }
-  }
-  .pz-fade { position:absolute; left:0; right:0; z-index:5; pointer-events:none; }
-  .pz-fade--top { top:0;    height:26vh; background:linear-gradient(180deg,#0B0A0A 6%, transparent); }
-  .pz-fade--bot { bottom:0; height:14vh; background:linear-gradient(0deg,  #0B0A0A 24%, transparent); }
-  [data-theme="light"] .pz-fade--top { background:linear-gradient(180deg,var(--white) 6%, transparent); }
-  [data-theme="light"] .pz-fade--bot { background:linear-gradient(0deg, var(--white) 14%, transparent); }
-  /* SKATISTA = colagem: cabeça REAL + pés DESENHADOS; fica fixa, o corredor é que desliza */
-  .pz-skater { position:absolute; left:50%; bottom:5vh; z-index:6; width:clamp(150px,14vw,220px);
-    transform:translateX(-50%); will-change:transform; }
-  .pz-collage { position:relative; width:100%; aspect-ratio:1/1.55; }
-  .pz-head { position:absolute; left:50%; bottom:33%; width:80%; transform:translateX(-50%); z-index:3;
-    filter:drop-shadow(0 8px 10px rgba(0,0,0,.32)); }
-  .pz-legs { position:absolute; left:50%; bottom:0; width:86%; transform:translateX(-50%); z-index:2; }
-  .pz-legs svg { width:100%; height:auto; display:block; overflow:visible; }
-  /* contorno branco mais leve: 4 sombras em vez de 8 */
-  .pz-stick { filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
-    drop-shadow(0 7px 7px rgba(0,0,0,.3)); }
-  .pz-legenda { position:absolute; left:clamp(20px,5vw,56px); top:clamp(66px,10vh,96px); z-index:7; }
-  .pz-frase { font-family:'Caveat',cursive; font-weight:700; font-size:clamp(30px,5vw,58px);
-    color:#FAF7F2; line-height:1; margin-top:12px; text-shadow:0 3px 20px rgba(0,0,0,.7); }
-  .pz-frase b { color:var(--rose); }
-  [data-theme="light"] .pz-frase { color:#191512; text-shadow:0 2px 16px rgba(255,255,255,.85); }
-  @media (max-width:720px){ .pz-skater { width:132px; } }
-  /* MOBILE: a galeria DESLIZA COM O SCROLL, igual ao desktop (o loop JS controla o transform
-     conforme você rola). Aqui só tiramos o que é de mouse/pesado: pétalas, brilho do mouse,
-     balanços contínuos e will-change extra — assim desliza com o scroll sem travar. */
-  @media (max-width: 860px) {
-    .pz-glow, .pz-petal { display:none !important; }
-    .pz-qin, .pz-placa-in, .pz-leaf { animation:none !important; }
-    .pz-quadro, .pz-placa, .pz-leaf { will-change:auto !important; }
-  }
-</style>
-<section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
-  <div class="pz-stage" id="pz-stage">
-    <div class="pz-mundo" id="pz-mundo">
-      <img class="pz-pano" src="img/galeria.jpg" alt="" aria-hidden="true" decoding="async"/>
-
-      <!-- quadros flutuantes: a curadoria da Hera -->
-      <figure class="pz-quadro" style="--qx:7%; --qy:12%; --qw:10%; --rot:1.8deg; --d:30; --swd:7.4s">
-        <div class="pz-qin">
-          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-crianca.jpg" alt="A flor da hera desenhada a giz de cera"/></div>
-        </div>
-      </figure>
-
-      <figure class="pz-quadro" style="--qx:29%; --qy:16%; --qw:16%; --rot:1.4deg; --d:44; --swd:7.6s">
-        <div class="pz-qin">
-          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-criacao.jpg" alt="A Criação da Hera, paródia de Michelangelo"/></div>
-        </div>
-      </figure>
-
-      <figure class="pz-quadro" style="--qx:55%; --qy:12%; --qw:9.5%; --rot:-2.2deg; --d:52; --swd:6s">
-        <div class="pz-qin">
-          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-natureza.jpg" alt="Natureza-morta com a flor hera"/></div>
-        </div>
-      </figure>
-
-      <figure class="pz-quadro" style="--qx:78%; --qy:18%; --qw:15%; --rot:-1.6deg; --d:34; --swd:7s">
-        <div class="pz-qin">
-          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-piscina.jpg" alt="A flor da hera boiando na piscina"/></div>
-        </div>
-      </figure>
-    </div>
-
-    <!-- folhagem viva em primeiro plano (samambaia real recortada da própria cena) -->
-    <div class="pz-front" id="pz-front" aria-hidden="true">
-      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:9%;  height:38vh; --lsd:5.8s"/>
-      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:55%; height:30vh; --lsd:6.9s; opacity:.62"/>
-      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:86%; height:42vh; --lsd:5.1s"/>
-    </div>
-
-    <div class="pz-glow" id="pz-glow" aria-hidden="true"></div>
-
-    <span class="pz-petal" style="left:12%; --drift:90px;  animation-duration:9s;   animation-delay:0s"></span>
-    <span class="pz-petal" style="left:30%; --drift:-70px; animation-duration:11s;  animation-delay:-3s"></span>
-    <span class="pz-petal" style="left:52%; --drift:110px; animation-duration:8.5s; animation-delay:-6s"></span>
-    <span class="pz-petal" style="left:68%; --drift:-60px; animation-duration:12s;  animation-delay:-1.5s"></span>
-    <span class="pz-petal" style="left:84%; --drift:80px;  animation-duration:10s;  animation-delay:-8s"></span>
-    <span class="pz-petal" style="left:44%; --drift:60px;  animation-duration:13s;  animation-delay:-10s"></span>
-
-    <div class="pz-fade pz-fade--top"></div>
-    <div class="pz-fade pz-fade--bot"></div>
-
-    <div class="pz-skater" id="pz-skater">
-      <div class="pz-collage">
-        <div class="pz-legs pz-stick" aria-hidden="true">
-          <svg viewBox="0 0 300 260">
-            <defs>
-              <linearGradient id="pz-deck" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#6E7BFF"/><stop offset="1" stop-color="#3A46E0"/></linearGradient>
-            </defs>
-            <!-- SKATE (longboard fininho, glossy) -->
-            <ellipse cx="72" cy="242" rx="15" ry="15" fill="#2A2740"/>
-            <ellipse cx="228" cy="242" rx="15" ry="15" fill="#2A2740"/>
-            <ellipse cx="72" cy="242" rx="8.5" ry="8.5" fill="#E8447A"/>
-            <ellipse cx="228" cy="242" rx="8.5" ry="8.5" fill="#E8447A"/>
-            <ellipse cx="72" cy="242" rx="3" ry="3" fill="#FFD6E4"/>
-            <ellipse cx="228" cy="242" rx="3" ry="3" fill="#FFD6E4"/>
-            <rect x="30" y="223" width="240" height="6" rx="3" fill="#B9A0D8"/>          <!-- trucks -->
-            <path d="M34 210 q-6 0 -6 6 l0 4 q0 6 6 6 l232 0 q6 0 6 -6 l0 -4 q0 -6 -6 -6 z" fill="url(#pz-deck)"/>
-            <rect x="46" y="212" width="150" height="5" rx="2.5" fill="#fff" opacity=".4"/> <!-- brilho -->
-            <circle cx="150" cy="216" r="9" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/> <!-- florzinha (marca) -->
-            <!-- PERNAS (sobem por trás do cabelo, coladas na cabeça) -->
-            <path d="M138 -64 C132 30 118 120 116 176" stroke="#F0C6A4" stroke-width="26" fill="none" stroke-linecap="round"/>
-            <path d="M162 -64 C172 30 184 120 186 176" stroke="#E7BC98" stroke-width="25" fill="none" stroke-linecap="round"/>
-            <!-- BLUSA rosa clara com a flor da hera rabiscada (desenho de criança) -->
-            <path d="M112 -72 h76 v80 q0 8 -8 8 h-60 q-8 0 -8 -8 z" fill="#FFD9E6"/>
-            <path d="M112 -72 h76 v14 h-76 z" fill="#FFC3D9" opacity=".8"/>
-            <!-- florzinha rabiscada bem no vão do cabelo, acima do shorts -->
-            <g stroke="#E8447A" stroke-width="2.2" stroke-linecap="round" fill="#FFB0CC">
-              <circle cx="150" cy="-15" r="5.5"/>
-              <circle cx="159" cy="-9" r="5.2"/>
-              <circle cx="157" cy="1" r="5.5"/>
-              <circle cx="146" cy="4" r="5.2"/>
-              <circle cx="139" cy="-3" r="5.5"/>
-              <circle cx="142" cy="-12" r="5"/>
-            </g>
-            <circle cx="149" cy="-5" r="4.5" fill="#4B57FF"/>
-            <!-- SHORTS framboesa (peça única) -->
-            <path d="M120 6 L180 6 L191 90 Q171 106 156 94 L150 72 L144 94 Q129 106 109 90 Z" fill="#E8447A"/>
-            <path d="M150 6 L180 6 L191 90 Q171 106 156 94 L150 72 Z" fill="#DB2E63" opacity=".55"/>
-            <!-- TÊNIS chunky brancos -->
-            <g>
-              <path d="M92 178 q-30 2 -34 20 q-2 10 10 12 l42 3 q14 1 14 -12 l0 -20 q-16 -6 -32 -3 z" fill="#FFFFFF"/>
-              <path d="M60 196 q-4 8 8 10 l52 3 q10 1 10 -8" fill="none" stroke="#E8447A" stroke-width="4" stroke-linecap="round"/>
-              <path d="M96 182 q6 8 6 16" stroke="#DCD3EA" stroke-width="3" fill="none"/>
-            </g>
-            <g>
-              <path d="M178 178 q30 2 34 20 q2 10 -10 12 l-42 3 q-14 1 -14 -12 l0 -20 q16 -6 32 -3 z" fill="#F6F2EC"/>
-              <path d="M240 196 q4 8 -8 10 l-52 3 q-10 1 -10 -8" fill="none" stroke="#C9AEE8" stroke-width="4" stroke-linecap="round"/>
-              <path d="M204 182 q-6 8 -6 16" stroke="#DCD3EA" stroke-width="3" fill="none"/>
-            </g>
-          </svg>
-        </div>
-        <img class="pz-head" src="img/rosto-cut-b.png" alt="Paloma"/>
-      </div>
-    </div>
-
-    <div class="pz-legenda">
-      <span class="pz-eyebrow y2k-sticker">✦ a galeria</span>
-      <p class="pz-frase">um passeio<br/>pela <b>arte</b>.</p>
-    </div>
-  </div>
-</section>
-<script>
-// O PASSEIO — o corredor desliza; quadros flutuam com ventinho + parallax do mouse; você fica fixa
-(function(){
-  const pista = document.querySelector('.pz-pista'); if(!pista) return;
-  // (a galeria desliza com o scroll IGUAL desktop — roda até no mobile e com "Reduzir Movimento")
-  const stage  = document.getElementById('pz-stage');
-  const mundo  = document.getElementById('pz-mundo');
-  const front  = document.getElementById('pz-front');
-  const glow   = document.getElementById('pz-glow');
-  const skater = document.getElementById('pz-skater');
-  const legenda= pista.querySelector('.pz-legenda');
-  const quadros= Array.from(pista.querySelectorAll('.pz-quadro, .pz-placa'));
-  if(!mundo || !skater) return;
-  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  let visible=false, raf=0, vel=0, pPrev=0;
-  let mxT=0, myT=0, mx=0, my=0;                    // mouse alvo + suavizado (-0.5..0.5)
-  stage.addEventListener('pointermove', e=>{
-    const b = stage.getBoundingClientRect();
-    mxT = (e.clientX-b.left)/b.width - .5;
-    myT = (e.clientY-b.top)/b.height - .5;
-    if(glow){ glow.style.setProperty('--gx', ((mxT+.5)*100).toFixed(1)+'%'); glow.style.setProperty('--gy', ((myT+.5)*100).toFixed(1)+'%'); }
-  }, {passive:true});
-  stage.addEventListener('pointerleave', ()=>{ mxT=0; myT=0; }, {passive:true});
-  function frame(now){
-    const r = pista.getBoundingClientRect(), vh = innerHeight, vw = innerWidth;
-    const alc = r.height - vh;
-    const p = alc>0 ? clamp(-r.top/alc, 0, 1) : 0;
-    // o corredor desliza (você desce a galeria); a folhagem da frente anda mais rápido (profundidade)
-    const slide = p * (mundo.offsetWidth - vw);
-    mundo.style.transform = 'translate3d('+(-slide).toFixed(1)+'px,0,0)';
-    if(front) front.style.transform = 'translate3d('+(-slide*1.18).toFixed(1)+'px,0,0)';
-    // título de abertura: some suave quando o passeio começa
-    if(legenda) legenda.style.opacity = clamp(1 - (p-0.05)/0.09, 0, 1).toFixed(2);
-    // parallax do mouse nos quadros (suavizado)
-    mx += (mxT-mx)*0.06; my += (myT-my)*0.06;
-    for(const q of quadros){
-      const d = parseFloat(q.style.getPropertyValue('--d')||'30');
-      q.style.setProperty('--px', (-mx*d).toFixed(1));
-      q.style.setProperty('--py', (-my*d*0.6).toFixed(1));
-    }
-    // você fixa: balança + inclina com a velocidade da rolagem
-    vel += ((p - pPrev)*3000 - vel)*0.09; pPrev = p;
-    const carve = clamp(vel,-12,12), bob = Math.sin(now/280)*6;
-    skater.style.transform = 'translateX(-50%) translateY('+bob.toFixed(1)+'px) rotate('+(carve*0.6).toFixed(2)+'deg)';
-    if(visible) raf = requestAnimationFrame(frame);
-  }
-  // o corredor desliza com o scroll (desktop E mobile) — só roda quando a seção está visível
-  new IntersectionObserver(([e])=>{
-    if(e.isIntersecting){ if(!visible){ visible=true; raf=requestAnimationFrame(frame); } }
-    else { visible=false; cancelAnimationFrame(raf); }
-  }, {threshold:0}).observe(pista);
-})();
-</script>
-
 <!-- PROJETOS — bento editorial com hover reveal -->
 <section id="proj" class="rv">
   <header class="p-head" style="position:relative">
@@ -2454,6 +2204,302 @@
     <p class="pt-sub">Você acabou de provar: quem explora, descobre. É assim que nasce cada projeto meu.</p>
   </div>
 </section>
+
+<!-- ══ O PASSEIO DA HERA · você (cabeça real + pés desenhados) passeia pela galeria dos sonhos (corredor desliza) ══ -->
+<style>
+  .pz-pista { position: relative; height: 440vh; }
+  .pz-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; background:#0B0A0A; }
+  [data-theme="light"] .pz-stage { background: var(--white); }
+  /* o MUNDO (corredor + quadros flutuantes) desliza — você desce a galeria */
+  .pz-mundo { position:absolute; top:0; left:0; height:100%; aspect-ratio: 2172/724; z-index:1; will-change:transform; }
+  .pz-pano { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  /* ── QUADROS FLUTUANTES (soltos, na frente do corredor) ── */
+  .pz-quadro { position:absolute; left:var(--qx); top:var(--qy); width:var(--qw); z-index:2;
+    transform: translate3d(calc(var(--px,0)*1px), calc(var(--py,0)*1px), 0) rotate(var(--rot,0deg)); will-change:transform; }
+  .pz-qin { animation: pz-sway var(--swd,6.5s) ease-in-out infinite alternate; transform-origin:top center; }
+  @keyframes pz-sway { from { transform: rotate(-1.1deg) translateY(0); } to { transform: rotate(1.3deg) translateY(7px); } }
+  .pz-moldura { background:#FBF6EC; padding:5.5% 5.5% 4.5%; border:3px solid #C9A253;
+    box-shadow: inset 0 0 0 2px #E7CE93, 0 30px 50px -18px rgba(15,8,4,.55), 0 10px 18px -8px rgba(15,8,4,.4); }
+  .pz-moldura img { display:block; width:100%; height:auto; }
+  .pz-etq { margin-top:9px; display:flex; justify-content:center; }
+  .pz-etq span { display:inline-block; background:linear-gradient(180deg,#EFD9A5,#C9A253); color:#4A3512;
+    font-family:'Inter',sans-serif; font-size:clamp(8px,.62vw,12px); font-weight:600; letter-spacing:.04em;
+    padding:4px 12px; border-radius:3px; box-shadow:0 6px 12px -6px rgba(15,8,4,.5); white-space:nowrap; }
+  /* placa de museu (a piada) */
+  .pz-placa { position:absolute; left:var(--qx); top:var(--qy); z-index:2; width:var(--qw);
+    transform: translate3d(calc(var(--px,0)*1px), calc(var(--py,0)*1px), 0) rotate(var(--rot,0deg)); will-change:transform; }
+  .pz-placa-in { background:#F6EFE2; border:2px solid #C9A253; border-radius:6px; padding:clamp(8px,1vw,18px) clamp(10px,1.2vw,22px);
+    box-shadow: inset 0 0 0 2px #E7CE93, 0 24px 44px -16px rgba(15,8,4,.55); text-align:center;
+    animation: pz-sway var(--swd,7.5s) ease-in-out infinite alternate; transform-origin:top center; }
+  .pz-placa-in b { display:block; font-family:'Inter',sans-serif; font-size:clamp(10px,.85vw,16px); font-weight:700;
+    color:#3E2E10; letter-spacing:.05em; text-transform:uppercase; }
+  .pz-placa-in i { display:block; margin-top:4px; font-family:'Caveat',cursive; font-style:normal;
+    font-size:clamp(13px,1.15vw,22px); color:var(--rose); }
+  /* folhagem viva em primeiro plano (desliza mais rápido = profundidade) */
+  .pz-front { position:absolute; top:0; left:0; height:100%; aspect-ratio: 2172/724; z-index:3; pointer-events:none; will-change:transform; }
+  /* leve: sem blur nem drop-shadow (só o balanço, que é transform GPU-barato) */
+  .pz-leaf { position:absolute; bottom:-5vh; width:auto; opacity:.6;
+    transform-origin:bottom center; animation: pz-leafsway var(--lsd,5.5s) ease-in-out infinite alternate; }
+  @keyframes pz-leafsway { from { transform: rotate(-2.2deg); } to { transform: rotate(2.4deg); } }
+  /* brilho suave que segue o mouse (sem mix-blend, mais leve) */
+  .pz-glow { position:absolute; inset:0; z-index:4; pointer-events:none; opacity:.4;
+    background: radial-gradient(360px 360px at var(--gx,50%) var(--gy,42%), rgba(255,235,190,.55), transparent 68%); }
+  /* pétalas voando ao vento */
+  .pz-petal { position:absolute; top:-6vh; width:15px; height:19px; z-index:4; pointer-events:none;
+    border-radius:62% 62% 60% 60% / 74% 74% 40% 40%;
+    background:radial-gradient(circle at 38% 28%, #FCD3E4, #E8447A); opacity:0;
+    filter:drop-shadow(0 2px 5px rgba(232,68,122,.28)); will-change:transform; animation:pz-petal linear infinite; }
+  @keyframes pz-petal {
+    0%   { opacity:0; transform:translateY(-6vh) translateX(0) rotate(0deg) scale(.9); }
+    8%   { opacity:.9; }
+    92%  { opacity:.85; }
+    100% { opacity:0; transform:translateY(112vh) translateX(var(--drift,80px)) rotate(560deg) scale(1.05); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .pz-petal { display:none; }
+    .pz-qin, .pz-placa-in, .pz-leaf { animation:none; }
+  }
+  .pz-fade { position:absolute; left:0; right:0; z-index:5; pointer-events:none; }
+  .pz-fade--top { top:0;    height:26vh; background:linear-gradient(180deg,#0B0A0A 6%, transparent); }
+  .pz-fade--bot { bottom:0; height:14vh; background:linear-gradient(0deg,  #0B0A0A 24%, transparent); }
+  [data-theme="light"] .pz-fade--top { background:linear-gradient(180deg,var(--white) 6%, transparent); }
+  [data-theme="light"] .pz-fade--bot { background:linear-gradient(0deg, var(--white) 14%, transparent); }
+  /* SKATISTA = colagem: cabeça REAL + pés DESENHADOS; fica fixa, o corredor é que desliza */
+  .pz-skater { position:absolute; left:50%; bottom:5vh; z-index:6; width:clamp(150px,14vw,220px);
+    transform:translateX(-50%); will-change:transform; }
+  .pz-collage { position:relative; width:100%; aspect-ratio:1/1.55; }
+  .pz-head { position:absolute; left:50%; bottom:33%; width:80%; transform:translateX(-50%); z-index:3;
+    filter:drop-shadow(0 8px 10px rgba(0,0,0,.32)); }
+  .pz-legs { position:absolute; left:50%; bottom:0; width:86%; transform:translateX(-50%); z-index:2; }
+  .pz-legs svg { width:100%; height:auto; display:block; overflow:visible; }
+  /* contorno branco mais leve: 4 sombras em vez de 8 */
+  .pz-stick { filter: drop-shadow(2px 0 0 #fff) drop-shadow(-2px 0 0 #fff) drop-shadow(0 2px 0 #fff) drop-shadow(0 -2px 0 #fff)
+    drop-shadow(0 7px 7px rgba(0,0,0,.3)); }
+  .pz-legenda { position:absolute; left:clamp(20px,5vw,56px); top:clamp(66px,10vh,96px); z-index:7; }
+  .pz-frase { font-family:'Caveat',cursive; font-weight:700; font-size:clamp(30px,5vw,58px);
+    color:#FAF7F2; line-height:1; margin-top:12px; text-shadow:0 3px 20px rgba(0,0,0,.7); }
+  .pz-frase b { color:var(--rose); }
+  [data-theme="light"] .pz-frase { color:#191512; text-shadow:0 2px 16px rgba(255,255,255,.85); }
+  @media (max-width:720px){ .pz-skater { width:132px; } }
+  /* MOBILE: a galeria DESLIZA COM O SCROLL, igual ao desktop (o loop JS controla o transform
+     conforme você rola). Aqui só tiramos o que é de mouse/pesado: pétalas, brilho do mouse,
+     balanços contínuos e will-change extra — assim desliza com o scroll sem travar. */
+  @media (max-width: 860px) {
+    .pz-glow, .pz-petal { display:none !important; }
+    .pz-qin, .pz-placa-in, .pz-leaf { animation:none !important; }
+    .pz-quadro, .pz-placa, .pz-leaf { will-change:auto !important; }
+  }
+  /* ── DICAS: "role pra baixo" (fica até a pessoa rolar) + toast se tentar arrastar pro lado ── */
+  .pz-scrollcue { position:absolute; left:50%; bottom:clamp(16px,4vh,34px); transform:translateX(-50%);
+    z-index:8; display:flex; align-items:center; gap:7px; pointer-events:none;
+    padding:9px 16px; border-radius:999px; background:rgba(11,10,10,.72); border:1px solid rgba(255,255,255,.18);
+    font-family:'Inter',sans-serif; font-weight:600; font-size:13px; letter-spacing:.01em; color:#FAF7F2;
+    white-space:nowrap; box-shadow:0 8px 24px -10px rgba(0,0,0,.6); opacity:0; }
+  [data-theme="light"] .pz-scrollcue { background:rgba(255,255,255,.82); border-color:rgba(0,0,0,.1); color:#191512; }
+  .pz-scrollcue b { font-size:15px; display:inline-block; animation:pz-cuebob 1.4s ease-in-out infinite; }
+  @keyframes pz-cuebob { 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(4px) } }
+  .pz-swipehint { position:absolute; left:50%; top:46%; transform:translate(-50%,-50%) scale(.94);
+    z-index:9; pointer-events:none; max-width:min(84vw,340px); text-align:center;
+    padding:14px 20px; border-radius:16px; background:rgba(11,10,10,.85); border:1px solid rgba(255,255,255,.2);
+    font-family:'Inter',sans-serif; font-weight:600; font-size:15px; line-height:1.35; color:#FAF7F2;
+    box-shadow:0 18px 44px -14px rgba(0,0,0,.7); opacity:0; transition:opacity .28s, transform .28s; }
+  [data-theme="light"] .pz-swipehint { background:rgba(255,255,255,.92); border-color:rgba(0,0,0,.1); color:#191512; }
+  .pz-swipehint b { color:var(--rose); }
+  .pz-swipehint.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+  @media (prefers-reduced-motion: reduce){ .pz-scrollcue b { animation:none; } }
+</style>
+<section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
+  <div class="pz-stage" id="pz-stage">
+    <div class="pz-mundo" id="pz-mundo">
+      <img class="pz-pano" src="img/galeria.jpg" alt="" aria-hidden="true" decoding="async"/>
+
+      <!-- quadros flutuantes: a curadoria da Hera -->
+      <figure class="pz-quadro" style="--qx:7%; --qy:12%; --qw:10%; --rot:1.8deg; --d:30; --swd:7.4s">
+        <div class="pz-qin">
+          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-crianca.jpg" alt="A flor da hera desenhada a giz de cera"/></div>
+        </div>
+      </figure>
+
+      <figure class="pz-quadro" style="--qx:29%; --qy:16%; --qw:16%; --rot:1.4deg; --d:44; --swd:7.6s">
+        <div class="pz-qin">
+          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-criacao.jpg" alt="A Criação da Hera, paródia de Michelangelo"/></div>
+        </div>
+      </figure>
+
+      <figure class="pz-quadro" style="--qx:55%; --qy:12%; --qw:9.5%; --rot:-2.2deg; --d:52; --swd:6s">
+        <div class="pz-qin">
+          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-natureza.jpg" alt="Natureza-morta com a flor hera"/></div>
+        </div>
+      </figure>
+
+      <figure class="pz-quadro" style="--qx:78%; --qy:18%; --qw:15%; --rot:-1.6deg; --d:34; --swd:7s">
+        <div class="pz-qin">
+          <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-piscina.jpg" alt="A flor da hera boiando na piscina"/></div>
+        </div>
+      </figure>
+    </div>
+
+    <!-- folhagem viva em primeiro plano (samambaia real recortada da própria cena) -->
+    <div class="pz-front" id="pz-front" aria-hidden="true">
+      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:9%;  height:38vh; --lsd:5.8s"/>
+      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:55%; height:30vh; --lsd:6.9s; opacity:.62"/>
+      <img class="pz-leaf" decoding="async" loading="lazy" src="img/planta-fg.png" alt="" style="left:86%; height:42vh; --lsd:5.1s"/>
+    </div>
+
+    <div class="pz-glow" id="pz-glow" aria-hidden="true"></div>
+
+    <span class="pz-petal" style="left:12%; --drift:90px;  animation-duration:9s;   animation-delay:0s"></span>
+    <span class="pz-petal" style="left:30%; --drift:-70px; animation-duration:11s;  animation-delay:-3s"></span>
+    <span class="pz-petal" style="left:52%; --drift:110px; animation-duration:8.5s; animation-delay:-6s"></span>
+    <span class="pz-petal" style="left:68%; --drift:-60px; animation-duration:12s;  animation-delay:-1.5s"></span>
+    <span class="pz-petal" style="left:84%; --drift:80px;  animation-duration:10s;  animation-delay:-8s"></span>
+    <span class="pz-petal" style="left:44%; --drift:60px;  animation-duration:13s;  animation-delay:-10s"></span>
+
+    <div class="pz-fade pz-fade--top"></div>
+    <div class="pz-fade pz-fade--bot"></div>
+
+    <div class="pz-skater" id="pz-skater">
+      <div class="pz-collage">
+        <div class="pz-legs pz-stick" aria-hidden="true">
+          <svg viewBox="0 0 300 260">
+            <defs>
+              <linearGradient id="pz-deck" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#6E7BFF"/><stop offset="1" stop-color="#3A46E0"/></linearGradient>
+            </defs>
+            <!-- SKATE (longboard fininho, glossy) -->
+            <ellipse cx="72" cy="242" rx="15" ry="15" fill="#2A2740"/>
+            <ellipse cx="228" cy="242" rx="15" ry="15" fill="#2A2740"/>
+            <ellipse cx="72" cy="242" rx="8.5" ry="8.5" fill="#E8447A"/>
+            <ellipse cx="228" cy="242" rx="8.5" ry="8.5" fill="#E8447A"/>
+            <ellipse cx="72" cy="242" rx="3" ry="3" fill="#FFD6E4"/>
+            <ellipse cx="228" cy="242" rx="3" ry="3" fill="#FFD6E4"/>
+            <rect x="30" y="223" width="240" height="6" rx="3" fill="#B9A0D8"/>          <!-- trucks -->
+            <path d="M34 210 q-6 0 -6 6 l0 4 q0 6 6 6 l232 0 q6 0 6 -6 l0 -4 q0 -6 -6 -6 z" fill="url(#pz-deck)"/>
+            <rect x="46" y="212" width="150" height="5" rx="2.5" fill="#fff" opacity=".4"/> <!-- brilho -->
+            <circle cx="150" cy="216" r="9" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/> <!-- florzinha (marca) -->
+            <!-- PERNAS (sobem por trás do cabelo, coladas na cabeça) -->
+            <path d="M138 -64 C132 30 118 120 116 176" stroke="#F0C6A4" stroke-width="26" fill="none" stroke-linecap="round"/>
+            <path d="M162 -64 C172 30 184 120 186 176" stroke="#E7BC98" stroke-width="25" fill="none" stroke-linecap="round"/>
+            <!-- BLUSA rosa clara com a flor da hera rabiscada (desenho de criança) -->
+            <path d="M112 -72 h76 v80 q0 8 -8 8 h-60 q-8 0 -8 -8 z" fill="#FFD9E6"/>
+            <path d="M112 -72 h76 v14 h-76 z" fill="#FFC3D9" opacity=".8"/>
+            <!-- florzinha rabiscada bem no vão do cabelo, acima do shorts -->
+            <g stroke="#E8447A" stroke-width="2.2" stroke-linecap="round" fill="#FFB0CC">
+              <circle cx="150" cy="-15" r="5.5"/>
+              <circle cx="159" cy="-9" r="5.2"/>
+              <circle cx="157" cy="1" r="5.5"/>
+              <circle cx="146" cy="4" r="5.2"/>
+              <circle cx="139" cy="-3" r="5.5"/>
+              <circle cx="142" cy="-12" r="5"/>
+            </g>
+            <circle cx="149" cy="-5" r="4.5" fill="#4B57FF"/>
+            <!-- SHORTS framboesa (peça única) -->
+            <path d="M120 6 L180 6 L191 90 Q171 106 156 94 L150 72 L144 94 Q129 106 109 90 Z" fill="#E8447A"/>
+            <path d="M150 6 L180 6 L191 90 Q171 106 156 94 L150 72 Z" fill="#DB2E63" opacity=".55"/>
+            <!-- TÊNIS chunky brancos -->
+            <g>
+              <path d="M92 178 q-30 2 -34 20 q-2 10 10 12 l42 3 q14 1 14 -12 l0 -20 q-16 -6 -32 -3 z" fill="#FFFFFF"/>
+              <path d="M60 196 q-4 8 8 10 l52 3 q10 1 10 -8" fill="none" stroke="#E8447A" stroke-width="4" stroke-linecap="round"/>
+              <path d="M96 182 q6 8 6 16" stroke="#DCD3EA" stroke-width="3" fill="none"/>
+            </g>
+            <g>
+              <path d="M178 178 q30 2 34 20 q2 10 -10 12 l-42 3 q-14 1 -14 -12 l0 -20 q16 -6 32 -3 z" fill="#F6F2EC"/>
+              <path d="M240 196 q4 8 -8 10 l-52 3 q-10 1 -10 -8" fill="none" stroke="#C9AEE8" stroke-width="4" stroke-linecap="round"/>
+              <path d="M204 182 q-6 8 -6 16" stroke="#DCD3EA" stroke-width="3" fill="none"/>
+            </g>
+          </svg>
+        </div>
+        <img class="pz-head" src="img/rosto-cut-b.png" alt="Paloma"/>
+      </div>
+    </div>
+
+    <div class="pz-legenda">
+      <span class="pz-eyebrow y2k-sticker">✦ a galeria</span>
+      <p class="pz-frase">um passeio<br/>pela <b>arte</b>.</p>
+    </div>
+
+    <!-- dica: role pra baixo (o corredor anda descendo) + toast se a pessoa tentar arrastar pro lado -->
+    <div class="pz-scrollcue" id="pz-scrollcue"><span>role pra baixo</span> <b>👇</b></div>
+    <div class="pz-swipehint" id="pz-swipehint" aria-hidden="true">é pra baixo! 🛹 o passeio anda quando você <b>desce 👇</b></div>
+  </div>
+</section>
+<script>
+// O PASSEIO — o corredor desliza; quadros flutuam com ventinho + parallax do mouse; você fica fixa
+(function(){
+  const pista = document.querySelector('.pz-pista'); if(!pista) return;
+  // (a galeria desliza com o scroll IGUAL desktop — roda até no mobile e com "Reduzir Movimento")
+  const stage  = document.getElementById('pz-stage');
+  const mundo  = document.getElementById('pz-mundo');
+  const front  = document.getElementById('pz-front');
+  const glow   = document.getElementById('pz-glow');
+  const skater = document.getElementById('pz-skater');
+  const legenda= pista.querySelector('.pz-legenda');
+  const quadros= Array.from(pista.querySelectorAll('.pz-quadro, .pz-placa'));
+  if(!mundo || !skater) return;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  // dicas "role pra baixo" + toast quando a pessoa tenta arrastar pro lado (o skate anda descendo)
+  const cue = document.getElementById('pz-scrollcue');
+  const swipeHint = document.getElementById('pz-swipehint');
+  let curP = 0, tsX = 0, tsY = 0, hintTimer = 0, hintCd = false;
+  function flashHint(){
+    if(hintCd || !swipeHint) return;
+    hintCd = true;
+    swipeHint.classList.add('show');
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function(){ swipeHint.classList.remove('show'); }, 1600);
+    setTimeout(function(){ hintCd = false; }, 3000);
+  }
+  stage.addEventListener('touchstart', function(e){ const t=e.touches[0]; if(t){ tsX=t.clientX; tsY=t.clientY; } }, {passive:true});
+  stage.addEventListener('touchmove', function(e){
+    const t=e.touches[0]; if(!t) return;
+    const dx=t.clientX-tsX, dy=t.clientY-tsY;
+    if(Math.abs(dx)>36 && Math.abs(dx)>Math.abs(dy)*1.4 && curP<0.9) flashHint();  // gesto na horizontal = ela achou que arrasta
+  }, {passive:true});
+  stage.addEventListener('wheel', function(e){
+    if(Math.abs(e.deltaX)>Math.abs(e.deltaY)*1.4 && Math.abs(e.deltaX)>20 && curP<0.9) flashHint();  // trackpad de lado
+  }, {passive:true});
+  let visible=false, raf=0, vel=0, pPrev=0;
+  let mxT=0, myT=0, mx=0, my=0;                    // mouse alvo + suavizado (-0.5..0.5)
+  stage.addEventListener('pointermove', e=>{
+    const b = stage.getBoundingClientRect();
+    mxT = (e.clientX-b.left)/b.width - .5;
+    myT = (e.clientY-b.top)/b.height - .5;
+    if(glow){ glow.style.setProperty('--gx', ((mxT+.5)*100).toFixed(1)+'%'); glow.style.setProperty('--gy', ((myT+.5)*100).toFixed(1)+'%'); }
+  }, {passive:true});
+  stage.addEventListener('pointerleave', ()=>{ mxT=0; myT=0; }, {passive:true});
+  function frame(now){
+    const r = pista.getBoundingClientRect(), vh = innerHeight, vw = innerWidth;
+    const alc = r.height - vh;
+    const p = alc>0 ? clamp(-r.top/alc, 0, 1) : 0;
+    curP = p;
+    // a dica "role pra baixo" fica cheia no começo e some quando a pessoa começa a rolar (quem trava não rola = continua vendo)
+    if(cue) cue.style.opacity = clamp(1 - (p-0.04)/0.10, 0, 1).toFixed(2);
+    // o corredor desliza (você desce a galeria); a folhagem da frente anda mais rápido (profundidade)
+    const slide = p * (mundo.offsetWidth - vw);
+    mundo.style.transform = 'translate3d('+(-slide).toFixed(1)+'px,0,0)';
+    if(front) front.style.transform = 'translate3d('+(-slide*1.18).toFixed(1)+'px,0,0)';
+    // título de abertura: some suave quando o passeio começa
+    if(legenda) legenda.style.opacity = clamp(1 - (p-0.05)/0.09, 0, 1).toFixed(2);
+    // parallax do mouse nos quadros (suavizado)
+    mx += (mxT-mx)*0.06; my += (myT-my)*0.06;
+    for(const q of quadros){
+      const d = parseFloat(q.style.getPropertyValue('--d')||'30');
+      q.style.setProperty('--px', (-mx*d).toFixed(1));
+      q.style.setProperty('--py', (-my*d*0.6).toFixed(1));
+    }
+    // você fixa: balança + inclina com a velocidade da rolagem
+    vel += ((p - pPrev)*3000 - vel)*0.09; pPrev = p;
+    const carve = clamp(vel,-12,12), bob = Math.sin(now/280)*6;
+    skater.style.transform = 'translateX(-50%) translateY('+bob.toFixed(1)+'px) rotate('+(carve*0.6).toFixed(2)+'deg)';
+    if(visible) raf = requestAnimationFrame(frame);
+  }
+  // o corredor desliza com o scroll (desktop E mobile) — só roda quando a seção está visível
+  new IntersectionObserver(([e])=>{
+    if(e.isIntersecting){ if(!visible){ visible=true; raf=requestAnimationFrame(frame); } }
+    else { visible=false; cancelAnimationFrame(raf); }
+  }, {threshold:0}).observe(pista);
+})();
+</script>
 
 <!-- CTA FINAL -->
 <section id="wave-cta" class="rv">
