@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260724-1031';
+    var BUILD = 'v-20260725-2257';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -2457,6 +2457,15 @@
   }, {passive:true});
   stage.addEventListener('wheel', function(e){
     if(Math.abs(e.deltaX)>Math.abs(e.deltaY)*1.4 && Math.abs(e.deltaX)>20 && curP<0.9) flashHint();  // trackpad de lado
+  }, {passive:true});
+  // desktop no mouse: clicar e PUXAR o skate pro lado (arrasto horizontal) também dispara a dica
+  let pdX=0, pdY=0, pdDown=false;
+  stage.addEventListener('pointerdown', function(e){ pdDown=true; pdX=e.clientX; pdY=e.clientY; }, {passive:true});
+  window.addEventListener('pointerup',  function(){ pdDown=false; }, {passive:true});
+  stage.addEventListener('pointermove', function(e){
+    if(!pdDown) return;
+    const dx=e.clientX-pdX, dy=e.clientY-pdY;
+    if(Math.abs(dx)>40 && Math.abs(dx)>Math.abs(dy)*1.4 && curP<0.9) flashHint();
   }, {passive:true});
   let visible=false, raf=0, vel=0, pPrev=0;
   let mxT=0, myT=0, mx=0, my=0;                    // mouse alvo + suavizado (-0.5..0.5)
