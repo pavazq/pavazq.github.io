@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark">
+<html lang="pt-BR" data-theme="light">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -11,7 +11,7 @@
        o site detecta e recarrega a versão nova sozinho. Recarrega no MÁXIMO 1x por sessão. -->
   <script>
   (function(){
-    var BUILD = 'v-20260725-2257';
+    var BUILD = 'v-20260814-1633';
     try { if (sessionStorage.getItem('pv-rl')) return; } catch(e){}
     fetch('version.txt?_=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.text() : ''; })
@@ -47,7 +47,7 @@
   <link rel="modulepreload" href="https://esm.sh/react@18.3.1"/>
   <link rel="modulepreload" href="https://esm.sh/react-dom@18.3.1/client"/>
   <link rel="modulepreload" href="https://esm.sh/@paper-design/shaders-react@0.0.76?deps=react@18.3.1,react-dom@18.3.1"/>
-  <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('pv-theme-y2k') || 'dark');</script>
+  <script>/* a pagina SEMPRE abre no claro; o toggle troca so na sessao (nao le a preferencia salva no boot) */ document.documentElement.setAttribute('data-theme', 'light');</script>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Inter:wght@400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet"/>
   <style>
     /* ═══════════ TOKENS — Framboesa & Mel · DARK (padrão) ═══════════ */
