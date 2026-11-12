@@ -965,35 +965,6 @@
     [data-theme="light"] .proj-paper { box-shadow: 0 3px 14px rgba(0,0,0,.18); }
     [data-theme="light"] .proj-card:hover .proj-paper { box-shadow: 0 24px 44px rgba(0,0,0,.28); }
 
-    /* ANTES / DEPOIS — imagem antiga recortada por cima da nova, range invisível controla o corte */
-    .proj-card:hover .proj-paper.proj-ba { transform: none; }
-    .proj-ba img { position: absolute; inset: 0; -webkit-user-drag: none; user-select: none; }
-    .proj-ba .ba-antes { clip-path: inset(0 calc(100% - var(--pos)) 0 0); }
-    .ba-linha {
-      position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px;
-      transform: translateX(-1px); background: #fff; box-shadow: 0 0 10px rgba(0,0,0,.4);
-      pointer-events: none;
-    }
-    .ba-linha::after {
-      content: '‹ ›'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
-      background: #fff; color: #18181B; font-size: 15px; font-weight: 700; letter-spacing: 1px;
-      box-shadow: 0 3px 12px rgba(0,0,0,.35);
-    }
-    .ba-lbl {
-      position: absolute; bottom: 10px; padding: 3px 9px; border-radius: 100px;
-      font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-      background: rgba(10,10,10,.68); color: #fff; pointer-events: none;
-    }
-    .ba-lbl-antes { left: 10px; }
-    .ba-lbl-depois { right: 10px; }
-    .ba-range {
-      position: absolute; inset: 0; width: 100%; height: 100%; margin: 0;
-      opacity: 0; pointer-events: none;
-    }
-    .proj-ba { cursor: ew-resize; touch-action: pan-y; }
-    .proj-ba:has(.ba-range:focus-visible) { outline: 2px solid var(--violet); outline-offset: 2px; }
-
     /* INFO — nome, tag, descrição dentro da pasta (sempre visível) */
     .proj-info { padding: 0 4px; margin-bottom: 16px; }
     .proj-tag {
@@ -1755,21 +1726,16 @@
       </div>
     </article>
 
-    <!-- Castro Alves — redesign com antes/depois arrastável -->
+    <!-- Castro Alves — redesign (em andamento) -->
     <article class="proj-card site">
       <span class="proj-folder-tab"><span class="num">09</span> · castro-alves</span>
-      <div class="proj-paper proj-ba" style="--pos:50%">
-        <img src="img/preview-castro-novo.jpg" alt="Site novo da Escola Castro Alves" loading="lazy"/>
-        <img class="ba-antes" src="img/preview-castro-antigo.jpg" alt="Site antigo da Escola Castro Alves" loading="lazy"/>
-        <span class="ba-lbl ba-lbl-antes">Antes</span>
-        <span class="ba-lbl ba-lbl-depois">Depois</span>
-        <span class="ba-linha" aria-hidden="true"></span>
-        <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Comparar site antigo e site novo"/>
+      <div class="proj-paper">
+        <img src="img/mockup-castro.jpg" alt="Escola Castro Alves, site novo no notebook, tablet e celular" loading="lazy" style="object-position:center"/>
       </div>
       <div class="proj-info">
         <span class="proj-tag tag-rose">Redesign · Em andamento</span>
         <h3 class="proj-name">Escola Castro Alves</h3>
-        <p class="proj-desc">Site novo para uma escola bilíngue do Infantil ao Médio, em Diadema. Arraste a imagem para comparar o antigo com o novo.</p>
+        <p class="proj-desc">Site novo para uma escola bilíngue do Infantil ao Médio, em Diadema.</p>
       </div>
       <div class="proj-open-wrap">
         <button class="proj-open-btn">Abrir ↗</button>
@@ -1826,7 +1792,7 @@
     <article class="proj-card site">
       <span class="proj-folder-tab"><span class="num">02</span> · jsr-ambiental</span>
       <div class="proj-paper">
-        <img src="img/preview-jsr.jpg" alt="JSR Soluções Ambientais, site institucional" loading="lazy"/>
+        <img src="img/mockup-jsr.jpg" alt="JSR Soluções Ambientais, site no notebook, tablet e celular" loading="lazy" style="object-position:center"/>
       </div>
       <div class="proj-info">
         <span class="proj-tag tag-coral">Site Institucional</span>
@@ -1852,7 +1818,7 @@
     <article class="proj-card site">
       <span class="proj-folder-tab"><span class="num">03</span> · a2-transportes</span>
       <div class="proj-paper">
-        <img src="img/preview-a2.jpg" alt="A2 Transportes, site institucional" loading="lazy"/>
+        <img src="img/mockup-a2.jpg" alt="A2 Transportes, site no notebook, tablet e celular" loading="lazy" style="object-position:center"/>
       </div>
       <div class="proj-info">
         <span class="proj-tag tag-lilac">Site Institucional</span>
@@ -1862,11 +1828,11 @@
       <div class="proj-open-wrap">
         <button class="proj-open-btn">Abrir ↗</button>
         <div class="proj-open-menu">
-          <button data-mode="desktop" data-url="https://a2-transportes.vercel.app" data-label="a2-transportes.vercel.app">
+          <button data-mode="desktop" data-url="https://a2transporte.com.br" data-label="a2transporte.com.br">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
             <span class="menu-label">Ver em Desktop</span>
           </button>
-          <button data-mode="mobile" data-url="https://a2-transportes.vercel.app" data-label="a2-transportes.vercel.app">
+          <button data-mode="mobile" data-url="https://a2transporte.com.br" data-label="a2transporte.com.br">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg>
             <span class="menu-label">Ver em Mobile</span>
           </button>
@@ -3548,6 +3514,9 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   });
 })();
 
+// sites que não deixam abrir dentro de iframe (X-Frame-Options): abrem direto em nova aba, sem moldura
+const NOFRAME = new Set(['https://a2transporte.com.br']);
+
 // ═══════════ Folder Open — popover Desktop/Mobile dentro do card ═══════════
 // Click em "Abrir ↗" → mostra popover com 2 opções (Desktop / Mobile).
 // Click em uma opção → fecha popover e dispara o modal device-preview existente
@@ -3573,7 +3542,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
       const touch = window.matchMedia('(max-width: 820px)').matches || window.matchMedia('(pointer: coarse)').matches;
       // Sistemas (apps pesados, com tour) e QUALQUER aparelho de toque (celular/tablet):
       // abrem o app direto em nova aba — tela cheia, nativo, sem moldura travando nem tour cobrindo.
-      if (isSys || touch) {
+      if (isSys || touch || NOFRAME.has(firstUrl)) {
         if (firstUrl) window.open(firstUrl, '_blank', 'noopener');
         return;
       }
@@ -3615,7 +3584,8 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
     'https://salaoexplosion.com.br': 'salao',
     'https://salaoexplosion.com.br/landing/': 'landing',
     'https://jsrsolucoesambientais.com.br': 'jsr',
-    'https://a2-transportes.vercel.app': 'a2',
+    'https://a2transporte.com.br': 'a2',
+    'https://castro-alves-site.vercel.app': 'castro',
     'https://nutriodemo.vercel.app': 'nutrio',
     'https://paloma-nutri-demo.vercel.app': 'palomanutri',
     'https://tecbas-site-palomavazq-9520s-projects.vercel.app': 'tecbas',
@@ -3711,6 +3681,7 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
       const label = btn.dataset.label || url;
       const local = btn.dataset.local;
       if (mode === 'local') { window.open(local, '_blank'); return; }
+      if (NOFRAME.has(url)) { window.open(url, '_blank', 'noopener'); return; }
       // quem já está no celular vê o site de verdade, direto — sem moldura dentro da tela
       if (window.matchMedia('(max-width: 820px)').matches) { window.open(url, '_blank', 'noopener'); return; }
       // Desktop: SISTEMA abre o app de verdade em nova aba; SITE mostra a moldura de navegador
@@ -3761,21 +3732,6 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
   });
   ['pointerup', 'pointercancel'].forEach(ev =>
     st.addEventListener(ev, () => { dragging = false; st.classList.remove('drag'); }));
-})();
-
-// ═══════════ Antes / depois — arrastar no card (mouse e toque) ═══════════
-// O range fica só para teclado; o arrasto é por pointer porque no iOS o range só responde no thumb.
-;(function initAntesDepois() {
-  document.querySelectorAll('.proj-ba').forEach(box => {
-    const range = box.querySelector('.ba-range');
-    const set = v => { v = Math.max(0, Math.min(100, v)); box.style.setProperty('--pos', v + '%'); range.value = v; };
-    const fromX = x => { const r = box.getBoundingClientRect(); set((x - r.left) / r.width * 100); };
-    let dragging = false;
-    box.addEventListener('pointerdown', e => { e.preventDefault(); dragging = true; box.setPointerCapture(e.pointerId); fromX(e.clientX); });
-    box.addEventListener('pointermove', e => { if (dragging) fromX(e.clientX); });
-    ['pointerup', 'pointercancel'].forEach(ev => box.addEventListener(ev, () => { dragging = false; }));
-    range.addEventListener('input', () => set(+range.value));
-  });
 })();
 
 // ═══════════ Ondas do CTA final (wavy background em canvas puro) ═══════════
@@ -3901,10 +3857,10 @@ const __isMobile     = matchMedia('(max-width: 768px)').matches;
       title: 'Sites',
       sub: 'Sites com a cara da marca, rápidos e fáceis de usar em qualquer tela.',
       items: [
-        { name: 'Escola Castro Alves', img: 'img/preview-castro-novo.jpg', desc: 'Site novo para escola bilíngue do Infantil ao Médio em Diadema, SP. Em andamento.', url: 'https://castro-alves-site.vercel.app' },
+        { name: 'Escola Castro Alves', img: 'img/mockup-castro.jpg', desc: 'Site novo para escola bilíngue do Infantil ao Médio em Diadema, SP. Em andamento.', url: 'https://castro-alves-site.vercel.app' },
         { name: 'Salão Explosion', img: 'img/preview-salao.jpg', desc: 'Site imersivo com animações para salão de beleza em Diadema, SP.', url: 'https://salaoexplosion.com.br' },
-        { name: 'JSR Ambiental', img: 'img/preview-jsr.jpg', desc: 'Site institucional para uma engenheira ambiental.', url: 'https://jsrsolucoesambientais.com.br' },
-        { name: 'A2 Transportes', img: 'img/preview-a2.jpg', desc: 'Site para empresa de transporte de passageiros.', url: 'https://a2-transportes.vercel.app' },
+        { name: 'JSR Ambiental', img: 'img/mockup-jsr.jpg', desc: 'Site institucional para uma engenheira ambiental.', url: 'https://jsrsolucoesambientais.com.br' },
+        { name: 'A2 Transportes', img: 'img/mockup-a2.jpg', desc: 'Site para empresa de transporte de passageiros.', url: 'https://a2transporte.com.br' },
         { name: 'Tecbas', img: 'img/preview-tecbas.jpg', desc: 'Site para empresa de manutenção de máquinas CNC.', url: 'https://tecbas-site-palomavazq-9520s-projects.vercel.app' },
         { name: 'Nanas Crochets', img: 'img/dt-nanas.jpg', desc: 'Loja de peças de crochê feitas à mão, com catálogo e pedido sob encomenda.', url: 'https://nanas-crochet.vercel.app' },
       ],
