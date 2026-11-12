@@ -2206,10 +2206,10 @@
     <div class="mk-copy">
       <span class="mk-eyebrow y2k-sticker">✦ A marca por trás</span>
       <h2 class="mk-title">Todo projeto leva<br/>a mesma <em>assinatura</em>. <span class="y2k-spark" style="font-size:.6em">✦</span></h2>
-      <p class="mk-lead">Hera é o estúdio por trás de cada projeto que eu assino. A ideia é simples: o seu negócio já tem valor, e o meu trabalho é fazer isso aparecer. Crio sites, sistemas e landing pages que colocam o seu negócio no espaço que ele sempre mereceu.</p>
+      <p class="mk-lead">Hera é o estúdio por trás de cada projeto que eu assino. O nome vem da planta: cresce devagar, se firma onde encosta e toma a parede inteira. A ideia é simples: o seu negócio já tem valor, e o meu trabalho é fazer isso aparecer. Crio sites, sistemas e landing pages que colocam o seu negócio no espaço que ele sempre mereceu.</p>
       <div class="mk-swatches">
-        <button class="mk-sw" style="--c:#4B57FF" data-hex="#4B57FF"><span></span>Cobalto</button>
-        <button class="mk-sw" style="--c:#E8447A" data-hex="#E8447A"><span></span>Rosa flor</button>
+        <button class="mk-sw" style="--c:#1227F1" data-hex="#1227F1"><span></span>Cobalto</button>
+        <button class="mk-sw" style="--c:#F9BCD2" data-hex="#F9BCD2"><span></span>Rosa flor</button>
         <button class="mk-sw" style="--c:#FAF1EB" data-hex="#FAF1EB"><span></span>Creme</button>
       </div>
       <a href="marca.html" class="mk-cta">conhecer a marca completa →</a>
@@ -2221,19 +2221,10 @@
   </div>
 </section>
 
-<!-- INTERACTIVE DOTS — "Curiosidade cria tudo" (bolinhas somem onde cursor passa) -->
-<section class="pt-sec rv">
-  <span class="pt-eyebrow rv"><span class="pt-hint-chip"><span class="pt-hint-txt"><span class="hint-desk">passe o cursor pra revelar</span><span class="hint-mob">passe o dedo pra revelar</span></span></span></span>
-  <canvas id="curiosity-canvas"></canvas>
-  <div class="pt-content">
-    <h2>Curiosidade<br/>cria <strong>tudo.</strong></h2>
-    <p class="pt-sub">Você acabou de provar: quem explora, descobre. É assim que nasce cada projeto meu.</p>
-  </div>
-</section>
 
 <!-- ══ O PASSEIO DA HERA · você (cabeça real + pés desenhados) passeia pela galeria dos sonhos (corredor desliza) ══ -->
 <style>
-  .pz-pista { position: relative; height: 440vh; }
+  .pz-pista { position: relative; height: 340vh; }
   .pz-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; background:#0B0A0A; }
   [data-theme="light"] .pz-stage { background: var(--white); }
   /* o MUNDO (corredor + quadros flutuantes) desliza — você desce a galeria */
@@ -2312,11 +2303,14 @@
      balanços contínuos e will-change extra — assim desliza com o scroll sem travar. */
   @media (max-width: 860px) {
     .pz-glow, .pz-petal { display:none !important; }
+    /* celular: folhagem menor (não cobre a abertura) e o primeiro quadro já aparece na primeira tela */
+    .pz-leaf { height:22vh !important; opacity:.45 !important; }
+    .pz-quadro:first-of-type { --qx:5% !important; --qy:24% !important; --qw:10.5% !important; }
     .pz-qin, .pz-placa-in, .pz-leaf { animation:none !important; }
     .pz-quadro, .pz-placa, .pz-leaf { will-change:auto !important; }
   }
   /* ── DICAS: "role pra baixo" (fica até a pessoa rolar) + toast se tentar arrastar pro lado ── */
-  .pz-scrollcue { position:absolute; left:50%; bottom:clamp(16px,4vh,34px); transform:translateX(-50%);
+  .pz-scrollcue { position:absolute; right:clamp(16px,4vw,48px); bottom:clamp(16px,4vh,34px);
     z-index:8; display:flex; align-items:center; gap:7px; pointer-events:none;
     padding:9px 16px; border-radius:999px; background:rgba(11,10,10,.72); border:1px solid rgba(255,255,255,.18);
     font-family:'Inter',sans-serif; font-weight:600; font-size:13px; letter-spacing:.01em; color:#FAF7F2;
@@ -2334,13 +2328,13 @@
   .pz-swipehint.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
   @media (prefers-reduced-motion: reduce){ .pz-scrollcue b { animation:none; } }
 </style>
-<section class="pz-pista" id="passeio" aria-label="Um passeio de skate pela galeria dos sonhos">
+<section class="pz-pista" id="passeio" aria-label="A hera ocupando o lugar dela: um passeio de skate pela galeria">
   <div class="pz-stage" id="pz-stage">
     <div class="pz-mundo" id="pz-mundo">
       <img class="pz-pano" src="img/galeria.jpg" alt="" aria-hidden="true" decoding="async"/>
 
       <!-- quadros flutuantes: a curadoria da Hera -->
-      <figure class="pz-quadro" style="--qx:7%; --qy:12%; --qw:10%; --rot:1.8deg; --d:30; --swd:7.4s">
+      <figure class="pz-quadro" style="--qx:15%; --qy:13%; --qw:10%; --rot:1.8deg; --d:30; --swd:7.4s">
         <div class="pz-qin">
           <div class="pz-moldura"><img decoding="async" loading="lazy" src="img/quadro-crianca.jpg" alt="A flor da hera desenhada a giz de cera"/></div>
         </div>
@@ -2441,7 +2435,7 @@
 
     <div class="pz-legenda">
       <span class="pz-eyebrow y2k-sticker">✦ a galeria</span>
-      <p class="pz-frase">um passeio<br/>pela <b>arte</b>.</p>
+      <p class="pz-frase">a hera ocupando<br/>o <b>lugar dela</b>.</p>
     </div>
 
     <!-- dica: role pra baixo (o corredor anda descendo) + toast se a pessoa tentar arrastar pro lado -->
