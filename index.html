@@ -1425,7 +1425,7 @@
 
   <div class="hero-lead">
     <h1 class="hero-title">Sites e sistemas<br/>pra sua marca<br/><em style="position:relative; display:inline-block">florescer<svg class="doodle dood-draw" viewBox="0 0 320 150" preserveAspectRatio="none" style="left:-15%; top:-30%; width:130%; height:168%; z-index:-1"><path pathLength="100" d="M60,74 C44,32 128,18 190,21 C266,24 306,46 296,78 C287,106 210,124 132,118 C56,112 18,92 42,58 C52,44 70,37 92,36" stroke="#E8447A" stroke-width="3.4"/></svg></em>. <span class="y2k-spark" style="font-size:.5em;vertical-align:middle">✦</span></h1>
-    <p class="hero-sub">O seu negócio já tem valor.<br/>Eu só mostro isso pro mundo.</p>
+    <p class="hero-sub">Pra escola, salão, loja ou consultório que já tem valor.<br/>Eu só mostro isso pro mundo.</p>
   </div>
   <div class="hero-fade" aria-hidden="true"></div>
 </section>
@@ -1443,7 +1443,7 @@
   </div>
   <div class="is-lead">
     <p class="is-bio">
-      Junto <strong>estratégia e design</strong> para criar sites e sistemas que ajudam o seu negócio a vender mais e a funcionar melhor no dia a dia, cuidando de cada detalhe do início ao fim.
+      Junto <strong>estratégia e design</strong> pra criar sites e sistemas pra quem tem um negócio de verdade: escola, salão, loja, consultório. O site ajuda a vender mais. O sistema faz o dia a dia funcionar melhor. E eu cuido de cada detalhe do início ao fim.
     </p>
     <div class="is-actions" style="position:relative">
       <a href="#ctt" class="is-btn ghost">Falar comigo →</a>
@@ -2625,6 +2625,25 @@
   @media (prefers-reduced-motion: reduce) {
     .hf-l, .hf-dot { opacity:1; transform:none; animation:none !important; }
   }
+
+  /* ═══════════ FOOTER ═══════════ */
+  .site-footer { position:relative; z-index:2; padding: 34px clamp(20px,5vw,64px) 40px; border-top:1px solid var(--border);
+    font-family:'Inter',sans-serif; }
+  .sf-inner { max-width:1180px; margin:0 auto; display:grid; grid-template-columns:1.2fr 1fr; gap:28px 40px; align-items:start; }
+  .sf-logo { height:34px; width:auto; display:block; margin-bottom:12px; }
+  .sf-sign { font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:clamp(18px,2.2vw,24px); letter-spacing:-.02em;
+    line-height:1.15; color:var(--ink); margin:0; }
+  .sf-sign em { font-style:normal; color:var(--rose); }
+  .sf-links { display:flex; flex-wrap:wrap; gap:10px 22px; justify-content:flex-end; align-content:start; padding-top:8px; }
+  .sf-links a { font-size:14px; font-weight:500; color:var(--dim); text-decoration:none; transition:color .25s ease; }
+  .sf-links a:hover { color:var(--rose); }
+  .sf-copy { grid-column:1 / -1; font-size:12.5px; color:var(--light); margin:4px 0 0; display:flex; flex-wrap:wrap; gap:6px 18px; }
+  .sf-copy a { color:var(--dim); text-decoration:none; }
+  .sf-copy a:hover { color:var(--rose); }
+  @media (max-width:720px) {
+    .sf-inner { grid-template-columns:1fr; gap:18px; }
+    .sf-links { justify-content:flex-start; padding-top:0; }
+  }
 </style>
 <section class="hera-finale" aria-label="hera">
   <!-- filtro glossy 3D: dá o brilho inflado (tipo balão) igual à referência -->
@@ -2648,6 +2667,26 @@
     <span class="hf-dot" style="--i:4; --rot:-22deg">.</span>
   </div>
 </section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="sf-inner">
+    <div class="sf-brand">
+      <img class="sf-logo lg-plain" src="img/hera-logo.png" alt="hera."/>
+      <img class="sf-logo lg-out" src="img/hera-logo-branco.png" alt="hera."/>
+      <p class="sf-sign">Toda marca merece ocupar seu <em>lugar</em>.</p>
+    </div>
+    <div class="sf-links" role="navigation" aria-label="Links do rodapé">
+      <a href="#servicos">Serviços</a>
+      <a href="#proj">Projetos</a>
+      <a href="#sobre">Sobre</a>
+      <a href="marca.html">A marca</a>
+      <a href="https://motions-six.vercel.app" target="_blank" rel="noopener">Biblioteca de efeitos ↗</a>
+      <a href="https://wa.me/5511950037191" target="_blank" rel="noopener">WhatsApp ↗</a>
+    </div>
+    <p class="sf-copy"><span>© 2026 hera. por Paloma Vazquez</span><span>Design que encanta, código que funciona.</span><a href="#home">voltar ao topo ↑</a></p>
+  </div>
+</footer>
 
 <script>
 // GRANDE FINAL — dispara a queda do "hera" quando o fim entra na tela
